@@ -24,14 +24,10 @@ export default function LoginPage() {
     try {
       const res = await api.post<LoginResponse>('/auth/login', data)
       saveSession(res.data)
-      toast.success(`Welcome, ${res.data.fullName}!`)
-
-      // Role-based redirect
-      if (res.data.role === 'franchise_owner' && res.data.assignedOutletId) {
-        router.push(`/outlet/${res.data.assignedOutletId}`)
-      } else {
-        router.push('/dashboard')
-      }
+      toast.success(`Welcome back, ${res.data.fullName}!`)
+      // All roles land on /dashboard — the layout + sidebar + backend scoping
+      // ensure each role only sees what they're allowed to see
+      router.push('/dashboard')
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Invalid User ID or password')
     } finally {

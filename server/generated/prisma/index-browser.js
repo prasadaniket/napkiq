@@ -216,6 +216,7 @@ exports.Prisma.StaffScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   role: 'role',
+  isAdmin: 'isAdmin',
   assignedOutletId: 'assignedOutletId',
   isActive: 'isActive',
   createdAt: 'createdAt',

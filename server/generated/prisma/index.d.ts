@@ -10134,6 +10134,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     role: $Enums.StaffRole | null
+    isAdmin: boolean | null
     assignedOutletId: string | null
     isActive: boolean | null
     createdAt: Date | null
@@ -10147,6 +10148,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     role: $Enums.StaffRole | null
+    isAdmin: boolean | null
     assignedOutletId: string | null
     isActive: boolean | null
     createdAt: Date | null
@@ -10160,6 +10162,7 @@ export namespace Prisma {
     email: number
     phone: number
     role: number
+    isAdmin: number
     assignedOutletId: number
     isActive: number
     createdAt: number
@@ -10175,6 +10178,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     role?: true
+    isAdmin?: true
     assignedOutletId?: true
     isActive?: true
     createdAt?: true
@@ -10188,6 +10192,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     role?: true
+    isAdmin?: true
     assignedOutletId?: true
     isActive?: true
     createdAt?: true
@@ -10201,6 +10206,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     role?: true
+    isAdmin?: true
     assignedOutletId?: true
     isActive?: true
     createdAt?: true
@@ -10287,6 +10293,7 @@ export namespace Prisma {
     email: string
     phone: string | null
     role: $Enums.StaffRole
+    isAdmin: boolean
     assignedOutletId: string | null
     isActive: boolean
     createdAt: Date
@@ -10317,6 +10324,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     role?: boolean
+    isAdmin?: boolean
     assignedOutletId?: boolean
     isActive?: boolean
     createdAt?: boolean
@@ -10331,6 +10339,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     role?: boolean
+    isAdmin?: boolean
     assignedOutletId?: boolean
     isActive?: boolean
     createdAt?: boolean
@@ -10345,6 +10354,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     role?: boolean
+    isAdmin?: boolean
     assignedOutletId?: boolean
     isActive?: boolean
     createdAt?: boolean
@@ -10359,13 +10369,14 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     role?: boolean
+    isAdmin?: boolean
     assignedOutletId?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "fullName" | "email" | "phone" | "role" | "assignedOutletId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["staff"]>
+  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "fullName" | "email" | "phone" | "role" | "isAdmin" | "assignedOutletId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["staff"]>
   export type StaffInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedOutlet?: boolean | Staff$assignedOutletArgs<ExtArgs>
   }
@@ -10388,6 +10399,7 @@ export namespace Prisma {
       email: string
       phone: string | null
       role: $Enums.StaffRole
+      isAdmin: boolean
       assignedOutletId: string | null
       isActive: boolean
       createdAt: Date
@@ -10822,6 +10834,7 @@ export namespace Prisma {
     readonly email: FieldRef<"Staff", 'String'>
     readonly phone: FieldRef<"Staff", 'String'>
     readonly role: FieldRef<"Staff", 'StaffRole'>
+    readonly isAdmin: FieldRef<"Staff", 'Boolean'>
     readonly assignedOutletId: FieldRef<"Staff", 'String'>
     readonly isActive: FieldRef<"Staff", 'Boolean'>
     readonly createdAt: FieldRef<"Staff", 'DateTime'>
@@ -11395,6 +11408,7 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     role: 'role',
+    isAdmin: 'isAdmin',
     assignedOutletId: 'assignedOutletId',
     isActive: 'isActive',
     createdAt: 'createdAt',
@@ -12254,6 +12268,7 @@ export namespace Prisma {
     email?: StringFilter<"Staff"> | string
     phone?: StringNullableFilter<"Staff"> | string | null
     role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    isAdmin?: BoolFilter<"Staff"> | boolean
     assignedOutletId?: UuidNullableFilter<"Staff"> | string | null
     isActive?: BoolFilter<"Staff"> | boolean
     createdAt?: DateTimeFilter<"Staff"> | Date | string
@@ -12268,6 +12283,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrderInput | SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
     assignedOutletId?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -12285,6 +12301,7 @@ export namespace Prisma {
     fullName?: StringFilter<"Staff"> | string
     phone?: StringNullableFilter<"Staff"> | string | null
     role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    isAdmin?: BoolFilter<"Staff"> | boolean
     assignedOutletId?: UuidNullableFilter<"Staff"> | string | null
     isActive?: BoolFilter<"Staff"> | boolean
     createdAt?: DateTimeFilter<"Staff"> | Date | string
@@ -12299,6 +12316,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrderInput | SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
     assignedOutletId?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -12318,6 +12336,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Staff"> | string
     phone?: StringNullableWithAggregatesFilter<"Staff"> | string | null
     role?: EnumStaffRoleWithAggregatesFilter<"Staff"> | $Enums.StaffRole
+    isAdmin?: BoolWithAggregatesFilter<"Staff"> | boolean
     assignedOutletId?: UuidNullableWithAggregatesFilter<"Staff"> | string | null
     isActive?: BoolWithAggregatesFilter<"Staff"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
@@ -12982,6 +13001,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     role: $Enums.StaffRole
+    isAdmin?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12995,6 +13015,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     role: $Enums.StaffRole
+    isAdmin?: boolean
     assignedOutletId?: string | null
     isActive?: boolean
     createdAt?: Date | string
@@ -13008,6 +13029,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13021,6 +13043,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     assignedOutletId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13034,6 +13057,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     role: $Enums.StaffRole
+    isAdmin?: boolean
     assignedOutletId?: string | null
     isActive?: boolean
     createdAt?: Date | string
@@ -13047,6 +13071,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13059,6 +13084,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     assignedOutletId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13905,6 +13931,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
     assignedOutletId?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -13918,6 +13945,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
     assignedOutletId?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -13931,6 +13959,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
     assignedOutletId?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -15119,6 +15148,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     role: $Enums.StaffRole
+    isAdmin?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15131,6 +15161,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     role: $Enums.StaffRole
+    isAdmin?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15296,6 +15327,7 @@ export namespace Prisma {
     email?: StringFilter<"Staff"> | string
     phone?: StringNullableFilter<"Staff"> | string | null
     role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    isAdmin?: BoolFilter<"Staff"> | boolean
     assignedOutletId?: UuidNullableFilter<"Staff"> | string | null
     isActive?: BoolFilter<"Staff"> | boolean
     createdAt?: DateTimeFilter<"Staff"> | Date | string
@@ -16392,6 +16424,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     role: $Enums.StaffRole
+    isAdmin?: boolean
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16544,6 +16577,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16556,6 +16590,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16568,6 +16603,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

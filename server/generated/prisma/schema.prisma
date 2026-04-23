@@ -200,6 +200,7 @@ model Staff {
   email            String    @unique
   phone            String?   @db.VarChar(15)
   role             StaffRole
+  isAdmin          Boolean   @default(false)
   assignedOutletId String?   @db.Uuid
   assignedOutlet   Outlet?   @relation(fields: [assignedOutletId], references: [id])
   isActive         Boolean   @default(true)

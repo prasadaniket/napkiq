@@ -176,12 +176,14 @@ router.delete('/items/:id', async (req, res, next) => {
 // POST /cms/menu/items/:id/image
 router.post('/items/:id/image', upload.single('image'), async (req, res, next) => {
   try {
+    const id = req.params['id'] as string
+
     if (!req.file) {
       res.status(400).json({ error: 'No image file provided' })
       return
     }
 
-    const item = await prisma.menuItem.findUnique({ where: { id: req.params.id } })
+    const item = await prisma.menuItem.findUnique({ where: { id } })
     if (!item) {
       res.status(404).json({ error: 'Item not found' })
       return
@@ -206,7 +208,7 @@ router.post('/items/:id/image', upload.single('image'), async (req, res, next) =
       const stream = cloudinary.uploader.upload_stream(
         {
           folder:          MENU_FOLDER,
-          public_id:       `item_${req.params.id}`,
+          public_id:       `item_${id}`,
           overwrite:       true,
           transformation:  [{ width: 800, height: 800, crop: 'limit', quality: 'auto', fetch_format: 'auto' }],
         },
@@ -219,7 +221,7 @@ router.post('/items/:id/image', upload.single('image'), async (req, res, next) =
     })
 
     const updated = await prisma.menuItem.update({
-      where: { id: req.params.id },
+      where: { id },
       data:  { imageUrl: result.secure_url },
     })
 

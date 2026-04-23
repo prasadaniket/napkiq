@@ -142,24 +142,108 @@ router.get('/stats', async (req, res, next) => {
 })
 
 // ─── GET /api/cms/outlets/:id ─────────────────────────────────────────────────
-// Single outlet details
+// Single outlet full analytics dashboard
 router.get('/:id', async (req, res, next) => {
   try {
+    const role = req.staff!.role
+    const outletId = req.params.id
+
     // Franchise owner can only see their assigned outlet
-    if (
-      req.staff!.role === 'franchise_owner' &&
-      req.params.id !== req.staff!.assignedOutletId
-    ) {
+    if (role === 'franchise_owner' && outletId !== req.staff!.assignedOutletId) {
       res.status(403).json({ error: 'Access denied' })
       return
     }
 
-    const outlet = await prisma.outlet.findUnique({
-      where: { id: req.params.id },
-    })
-
+    const outlet = await prisma.outlet.findUnique({ where: { id: outletId } })
     if (!outlet) { res.status(404).json({ error: 'Outlet not found' }); return }
-    res.json(outlet)
+
+    const thirtyDaysAgo = daysAgo(30)
+    const { start: monthStart, end: monthEnd } = monthRange()
+    const cWhere = { firstVisitOutletId: outletId }
+    const rWhere = { outletId }
+    const vWhere = { outletId }
+
+    const [
+      totalCustomers,
+      totalReviews,
+      totalVisits,
+      avgStars,
+      inactiveCustomers,
+      newCustomersThisWeek,
+      newCustomersThisMonth,
+      newCustomersThisYear,
+      reviewsThisWeek,
+      visitsThisMonth,
+      birthdaysThisMonth,
+      anniversariesThisMonth,
+      starDistribution,
+      recentCustomers,
+      recentReviews,
+      recentVisits,
+    ] = await Promise.all([
+      prisma.customer.count({ where: cWhere }),
+      prisma.review.count({ where: rWhere }),
+      prisma.customerVisit.count({ where: vWhere }),
+      prisma.review.aggregate({ where: rWhere, _avg: { stars: true } }),
+      prisma.customer.count({ where: { ...cWhere, lastVisitDate: { lt: thirtyDaysAgo } } }),
+      prisma.customer.count({ where: { ...cWhere, createdAt: { gte: startOf('week') } } }),
+      prisma.customer.count({ where: { ...cWhere, createdAt: { gte: startOf('month') } } }),
+      prisma.customer.count({ where: { ...cWhere, createdAt: { gte: startOf('year') } } }),
+      prisma.review.count({ where: { ...rWhere, createdAt: { gte: startOf('week') } } }),
+      prisma.customerVisit.count({ where: { ...vWhere, visitedAt: { gte: startOf('month') } } }),
+      prisma.customer.count({ where: { ...cWhere, birthDate: { gte: monthStart, lte: monthEnd } } }),
+      prisma.customer.count({ where: { ...cWhere, anniversaryDate: { gte: monthStart, lte: monthEnd } } }),
+      // Star distribution for rating bar chart
+      prisma.review.groupBy({
+        by: ['stars'],
+        where: rWhere,
+        _count: { stars: true },
+        orderBy: { stars: 'desc' },
+      }),
+      // Recent customers
+      prisma.customer.findMany({
+        where: cWhere,
+        orderBy: { createdAt: 'desc' },
+        take: 8,
+        select: { id: true, fullName: true, phone: true, totalVisits: true, lastVisitDate: true, createdAt: true },
+      }),
+      // Recent reviews
+      prisma.review.findMany({
+        where: rWhere,
+        orderBy: { createdAt: 'desc' },
+        take: 6,
+        include: { customer: { select: { fullName: true, phone: true } } },
+      }),
+      // Recent visits
+      prisma.customerVisit.findMany({
+        where: vWhere,
+        orderBy: { visitedAt: 'desc' },
+        take: 8,
+        include: { customer: { select: { fullName: true, phone: true } } },
+      }),
+    ])
+
+    res.json({
+      outlet,
+      stats: {
+        totalCustomers,
+        totalReviews,
+        totalVisits,
+        averageRating:          avgStars._avg.stars ?? null,
+        inactiveCustomers,
+        newCustomersThisWeek,
+        newCustomersThisMonth,
+        newCustomersThisYear,
+        reviewsThisWeek,
+        visitsThisMonth,
+        birthdaysThisMonth,
+        anniversariesThisMonth,
+        starDistribution: starDistribution.map(s => ({ stars: s.stars, count: s._count.stars })),
+      },
+      recentCustomers,
+      recentReviews,
+      recentVisits,
+    })
   } catch (err) {
     next(err)
   }

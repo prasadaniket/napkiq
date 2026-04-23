@@ -56,6 +56,17 @@ export interface Outlet {
   isActive:      boolean
 }
 
+export interface OutletDetail {
+  outlet: Outlet
+  stats: OutletStats & { starDistribution: { stars: number; count: number }[] }
+  recentCustomers: {
+    id: string; fullName: string; phone: string
+    totalVisits: number; lastVisitDate: string | null; createdAt: string
+  }[]
+  recentReviews: (Review & { customer?: { fullName: string; phone: string } })[]
+  recentVisits:  { id: string; visitType: 'qr_scan' | 'payment'; visitedAt: string; customer?: { fullName: string; phone: string } }[]
+}
+
 export interface OutletStats {
   outletId:               string
   outletName:             string

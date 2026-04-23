@@ -140,3 +140,9 @@ export interface Visit {
   customer?:   { fullName: string; phone: string }
   outlet?:     { name: string; code: string }
 }
+
+export interface VisitSummary {
+  totalVisits: number
+  qrScans:     number
+  payments:    number
+}

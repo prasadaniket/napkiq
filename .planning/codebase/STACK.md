@@ -1,147 +1,175 @@
 # Technology Stack
 
-**Analysis Date:** 2026-04-24
-
-## Summary
-
-StoneOven is a TypeScript monorepo with three application packages: `client/main` (Next.js 16, customer QR flow on port 3000), `client/cms` (Next.js 16, staff CMS portal on port 3001), and `server` (Express 5 + Prisma 7, REST API on port 8080). A fourth package `worker` is a Cloudflare Worker acting as a daily cron scheduler. All packages use strict TypeScript with no JavaScript source files.
-
----
+**Analysis Date:** 2026-04-25
 
 ## Languages
 
 **Primary:**
-- TypeScript ^5.x — `client/main`, `client/cms`, `worker`
-- TypeScript ^6.0.3 (devDep) — `server` (compiled to CommonJS via `tsc`)
+- TypeScript — All four packages (server, client/main, client/cms, worker)
 
-No `.js` source files exist in any `src/` directory.
+**Secondary:**
+- None — pure TypeScript throughout
 
----
+## Runtime
 
-## Runtime & Ports
+**Environment:**
+- Node.js — `server/` (Express API) and both Next.js frontends
+- Cloudflare Workers runtime — `worker/` (cron automation scheduler)
 
-| Package | Runtime | Port | Dev Command |
-|---------|---------|------|-------------|
-| `client/main` | Node.js (Next.js) | 3000 | `next dev -p 3000` |
-| `client/cms`  | Node.js (Next.js) | 3001 | `next dev -p 3001` |
-| `server`      | Node.js 20+       | 8080 | `ts-node-dev --respawn --transpile-only src/index.ts` |
-| `worker`      | Cloudflare Workers runtime | N/A | `wrangler dev` |
+**Package Manager:**
+- npm — lockfiles present per package directory
 
-Package manager: **npm** — lockfiles present in all four packages.
+## Monorepo Layout
 
----
+Four independent packages, each with its own `package.json` and `node_modules`:
 
-## Frameworks
-
-### client/main (`stoneoven-main`)
-
-- **Next.js 16.2.4** — App Router, React 19, `src/app/` directory layout
-- **React 19** + React DOM 19
-- **Tailwind CSS ^3.4.4** — utility-first CSS; config in `client/main/tailwind.config.*`
-- **Framer Motion ^12** — page/component animations
-- **React Hook Form ^7.51.5** + `@hookform/resolvers ^5` — form state management
-- **Zod ^4** — runtime schema validation
-- **Axios ^1.7.2** — HTTP client wrapping all backend calls (`src/lib/api.ts`)
-- **react-hot-toast ^2.4.1** — toast notifications
-- **date-fns ^4** — date utilities
-- **recharts ^3** — charts (analytics)
-- **@radix-ui/react-avatar ^1.1.11** — accessible avatar primitive
-
-### client/cms (`stoneoven-cms`)
-
-- **Next.js 16.2.4** — App Router, React 19, `src/app/(cms)/` route group
-- **React 19** + React DOM 19
-- **Tailwind CSS ^3.4.4**
-- **class-variance-authority ^0.7.1** — variant-based component styling
-- **tailwind-merge ^2.5.2** — class deduplication (`cn()` helper)
-- **lucide-react ^0.468.0** — icon set
-- **React Hook Form ^7.51.5** + **Zod ^4**
-- **Axios ^1.7.2** — HTTP client (`client/cms/src/lib/api.ts`)
-- **react-hot-toast ^2.4.1**
-- **date-fns ^4**
-- **@radix-ui/react-avatar ^1.1.11**
-
-### server
-
-- **Express ^5.2.1** — HTTP server (Express 5, not 4)
-- **Prisma ^7.7.0** — ORM; generated client at `server/generated/prisma/`
-- **`@prisma/adapter-pg` ^7.7.0** — PostgreSQL driver adapter for Prisma 7
-- **`pg` ^8.20.0** — PostgreSQL connection pool (`pg.Pool`)
-- **multer ^2.1.1** — multipart file upload (menu images, memory storage, 5 MB limit)
-- **cors ^2.8.6** — CORS middleware; allowed origins from `CORS_ORIGINS` env var
-- **jsonwebtoken ^9.0.3** — JWT sign/verify
-- **zod ^4.3.6** — request body validation
-- **csv-stringify ^6.7.0** — CSV export endpoints (`/api/cms/export`)
-- **dotenv ^17.4.2** — environment variable loading
-- **cloudinary ^2.9.0** — image upload SDK (`server/src/lib/cloudinary.ts`)
-- **resend ^6.12.2** — transactional email SDK (installed; currently in DRY_RUN mode)
-- **twilio ^6.0.0** — WhatsApp messaging SDK (installed; currently in DRY_RUN mode)
-
-### worker (`stoneoven-automation-worker`)
-
-- **Cloudflare Workers** runtime (no Node.js)
-- **wrangler ^3.0.0** — deploy CLI (`wrangler deploy`, `wrangler dev`)
-- **`@cloudflare/workers-types` ^4.20241230.0** — TypeScript types for Workers API
+| Package | Path | Port | Role |
+|---|---|---|---|
+| API Server | `server/` | 8080 | Express REST API |
+| Main Frontend | `client/main/` | 3000 | Customer-facing public site |
+| CMS Frontend | `client/cms/` | 3001 | Staff/admin dashboard |
+| Automation Worker | `worker/` | — | Cloudflare cron scheduler |
 
 ---
 
-## Database & ORM
+## Server (`server/`)
 
-- **PostgreSQL** — hosted on Supabase, connection via `DATABASE_URL` pooler (`aws-1-ap-northeast-1`)
-- **Prisma 7.7.0**
-  - **Canonical schema:** `server/generated/prisma/schema.prisma`
-  - `server/prisma/schema.prisma` is intentionally empty — do not edit it
-  - Generated Prisma Client output: `server/generated/prisma/`
-  - Connection: `pg.Pool` → `PrismaPg` adapter → `PrismaClient` (singleton in `server/src/lib/prisma.ts`)
-- **Database models:** `Outlet`, `Customer`, `CustomerVisit`, `Review`, `MenuCategory`, `MenuItem`, `AutomationLog`, `Staff`
+**Language:** TypeScript 6.x  
+**Module system:** CommonJS (`"type": "commonjs"`)  
+**TS target:** ES2020  
+**Dev runner:** `ts-node-dev ^2.0.0` (watch + transpile-only)  
+**Build:** `tsc` → `server/dist/`  
+**Entry:** `server/src/index.ts` → `server/src/app.ts`
 
----
+### Framework
+- `express ^5.2.1` — HTTP server, routing, middleware
 
-## Authentication
+### Database
+- `prisma ^7.7.0` — ORM, migrations, schema
+- `@prisma/client ^7.7.0` — generated query client (output to `server/src/generated/prisma/`)
+- `@prisma/adapter-pg ^7.7.0` — native Prisma driver adapter for `pg`
+- `pg ^8.20.0` — PostgreSQL connection pool
+- Database: **PostgreSQL** hosted on Supabase
 
-### CMS Staff (`client/cms` + `server`)
-- **Supabase Auth** — JWT tokens issued by Supabase
-- Server-side verification: `supabaseAdmin.auth.getUser(token)` in `server/src/middleware/auth.ts`
-- Client stores tokens in cookies: `cms_token` (access), `cms_refresh_token`, `cms_user` (7-day expiry)
-- Next.js middleware at `client/cms/src/middleware.ts` guards all routes except `/login`
-- RBAC roles: `admin` (UniCord), `owner` (Nitesh — all outlets), `franchise_owner` (single outlet)
+### Authentication
+- `@supabase/supabase-js ^2.104.0` — Supabase Auth (service role — server-side only)
+- `jsonwebtoken ^9.0.3` — type support (Supabase issues the actual JWTs)
 
-### Customer (`client/main`)
-- **FingerprintJS `@fingerprintjs/fingerprintjs ^5`** — browser device fingerprinting
-- No passwords — identity is `deviceId` (FP `visitorId`)
-- Fallback: `fallback-{timestamp}-{random}` on FP failure
-- Fingerprint initialisation: `client/main/src/lib/fingerprint.ts`
+### File Uploads
+- `multer ^2.1.1` — multipart/form-data (in-memory, 5 MB limit per file)
+- `cloudinary ^2.9.0` — menu item image storage and transformation
 
----
+### Messaging (both currently in DRY_RUN mode)
+- `twilio ^6.0.0` — WhatsApp Business API (stubbed, code ready in `server/src/lib/notifications.ts`)
+- `resend ^6.12.2` — transactional email (stubbed, code ready in `server/src/lib/notifications.ts`)
 
-## Build Tooling
+### Data Processing
+- `sentiment ^5.0.2` — keyword-based NLP sentiment analysis for reviews (`server/src/services/SentimentService.ts`)
+- `qrcode ^1.5.4` — QR code generation (SVG, PNG, dataURL) (`server/src/services/QRService.ts`)
+- `csv-stringify ^6.7.0` — CSV data export for customers and visits (`server/src/routes/cms/export.ts`)
 
-| Tool | Version | Package |
-|------|---------|---------|
-| TypeScript | ^5 | all clients |
-| TypeScript | ^6.0.3 | server (devDep) |
-| ESLint | ^9 + eslint-config-next | clients |
-| PostCSS + Autoprefixer | ^8 / ^10 | clients |
-| ts-node-dev | ^2.0.0 | server dev runner |
-| wrangler | ^3.0.0 | worker deploy |
-| tsc | — | server production build → `server/dist/` |
+### Validation
+- `zod ^4.3.6` — request body validation (used in auth and CMS routes)
 
----
+### Utilities
+- `dotenv ^17.4.2` — `.env` loading
+- `cors ^2.8.6` — CORS middleware (origin allowlist from `CORS_ORIGINS` env var)
 
-## TypeScript Configurations
-
-**`server/tsconfig.json`** — `target: ES2020`, `module: commonjs`, `strict: true`, `outDir: ./dist`
-
-**`worker/tsconfig.json`** — `target: ES2022`, `module: ES2022`, `moduleResolution: bundler`, `types: ["@cloudflare/workers-types"]`
-
-**clients** — standard Next.js tsconfig; path alias `@/` maps to `src/`
+### TypeScript Config (`server/tsconfig.json`)
+- `strict: true`, `resolveJsonModule: true`, `declaration: true`, `declarationMap: true`, `sourceMap: true`
 
 ---
 
-## DNS Override (server)
+## Client: Main (`client/main/`)
 
-`server/src/index.ts` overrides DNS servers to Google (`8.8.8.8`, `8.8.4.4`, `1.1.1.1`) and forces IPv4-first resolution because local DNS does not resolve `*.supabase.co` domains.
+**Framework:** Next.js 16.2.4 (App Router)  
+**React:** 19  
+**Language:** TypeScript 5.x  
+**Styling:** Tailwind CSS 3.4.4 + `tailwind-merge ^3.5.0` + `clsx ^2.1.1`  
+**Linting:** ESLint 9 + `eslint-config-next 16.2.4`
+
+### Key Libraries
+- `framer-motion ^12` — page/component animations
+- `recharts ^3` — charts (visit stats, dashboard data visualizations)
+- `axios ^1.7.2` — HTTP client; interceptors for JWT attach + mock-api switch (`client/main/src/lib/api.ts`)
+- `@fingerprintjs/fingerprintjs ^5` — anonymous device fingerprinting for visit tracking (`client/main/src/lib/fingerprint.ts`)
+- `@supabase/supabase-js ^2.104.0` + `@supabase/ssr ^0.10.2` — Supabase browser client
+- `react-hook-form ^7.51.5` + `@hookform/resolvers ^5` — form state management
+- `zod ^4` — form validation schemas
+- `date-fns ^4` — date formatting utilities
+- `react-hot-toast ^2.4.1` — toast notifications
+- `@radix-ui/react-avatar ^1.1.11` — avatar UI primitive
+
+### Build
+- `next dev -p 3000` / `next build` / `next start -p 3000`
 
 ---
 
-*Stack analysis: 2026-04-24*
+## Client: CMS (`client/cms/`)
+
+**Framework:** Next.js 16.2.4 (App Router)  
+**React:** 19  
+**Language:** TypeScript 5.x  
+**Styling:** Tailwind CSS 3.4.4 + `tailwind-merge ^2.5.2` + `clsx ^2.1.1`  
+**UI system:** shadcn/ui (configured via `client/cms/components.json`, Radix UI primitives)  
+**Linting:** ESLint 9 + `eslint-config-next 16.2.4`
+
+### Key Libraries
+- `axios ^1.7.2` — HTTP client; JWT attach + automatic refresh-token rotation on 401 (`client/cms/src/lib/api.ts`)
+- `@supabase/supabase-js ^2.104.0` + `@supabase/ssr ^0.10.2` — Supabase browser client
+- `react-hook-form ^7.51.5` + `@hookform/resolvers ^5` — form state management
+- `zod ^4` — validation schemas
+- `date-fns ^4` — date formatting
+- `react-hot-toast ^2.4.1` — toast notifications
+- `lucide-react ^0.468.0` — icon library
+- `@radix-ui/react-avatar ^1.1.11` — avatar primitive
+- `class-variance-authority ^0.7.1` — variant-based class composition (shadcn pattern)
+
+### Build
+- `next dev -p 3001` / `next build` / `next start -p 3001`
+
+---
+
+## Worker (`worker/`)
+
+**Platform:** Cloudflare Workers  
+**Language:** TypeScript 5.x (ES2022 modules)  
+**Tooling:** `wrangler ^3.0.0` — local dev, deploy, secrets management  
+**Types:** `@cloudflare/workers-types ^4.20241230.0`
+
+**Role:** Pure HTTP scheduler — no business logic. Fires `POST /api/automation/run` at 03:00 UTC daily via cron trigger. Also exposes manual trigger endpoint at `POST /trigger`.
+
+**Cron schedule:** `0 3 * * *` (03:00 UTC = 08:30 IST)
+
+---
+
+## Configuration Files
+
+| File | Purpose |
+|---|---|
+| `server/tsconfig.json` | Server TS config (CommonJS, ES2020, strict) |
+| `server/prisma/schema.prisma` | Prisma source schema (bare — no models, used for migration) |
+| `server/generated/prisma/schema.prisma` | Full schema with all models and enums (committed) |
+| `client/main/next.config.js` | Next.js image remote patterns (`api.stoneoven.in`, `localhost`) |
+| `client/cms/next.config.js` | Next.js image remote patterns (same as main) |
+| `client/cms/components.json` | shadcn/ui component registry config |
+| `client/main/tailwind.config.ts` | Tailwind configuration |
+| `client/cms/tailwind.config.ts` | Tailwind configuration |
+| `worker/wrangler.toml` | Cloudflare Worker: cron, account ID, `SERVER_URL` env var |
+
+## Platform Requirements
+
+**Development:**
+- Node.js (no `.nvmrc` — version unpinned)
+- PostgreSQL via Supabase (cloud-hosted, no local DB required)
+- `npm install` must be run independently in each package directory
+
+**Production:**
+- Express server → `https://api.stoneoven.in`
+- Main frontend → `https://stoneoven.in`
+- CMS frontend → separate deployment (port 3001 locally)
+- Worker → Cloudflare account `11de51483dbed991a23c44341f0ca00d`, deployed as `stoneoven-automation`
+
+---
+
+*Stack analysis: 2026-04-25*

@@ -35,7 +35,7 @@ jobs:
       run:
         working-directory: client/main
     env:
-      NEXT_PUBLIC_API_URL: https://api.stoneoven.in/api
+      NEXT_PUBLIC_API_URL: https://so-blik.onrender.com/api
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_MOCK_API: 'false'
@@ -60,7 +60,7 @@ jobs:
       run:
         working-directory: client/cms
     env:
-      NEXT_PUBLIC_API_URL: https://api.stoneoven.in/api
+      NEXT_PUBLIC_API_URL: https://so-blik.onrender.com/api
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_MOCK_API: 'false'

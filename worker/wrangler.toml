@@ -10,7 +10,7 @@ crons = ["0 3 * * *"]
 
 # Env vars — set secrets via: wrangler secret put AUTOMATION_SECRET
 [vars]
-SERVER_URL = "https://api.stoneoven.in"
+SERVER_URL = "https://so-blik.onrender.com"
 
 # ── Local dev overrides ──────────────────────────────────────────────────────
 [env.development]

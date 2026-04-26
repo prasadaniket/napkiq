@@ -34,6 +34,7 @@ export function createApp() {
         if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true)
         } else {
+          console.error(`[CORS Error] Origin "${origin}" is not allowed. Allowed:`, allowedOrigins)
           callback(new Error(`CORS: origin ${origin} not allowed`))
         }
       },

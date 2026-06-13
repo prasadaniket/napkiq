@@ -85,6 +85,122 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+// ─── GET /api/cms/customers/birthdays ──────────────────────────────────────────
+router.get('/birthdays', async (req, res, next) => {
+  try {
+    const outletId = resolveOutletFilter(req)
+    const currentMonth = new Date().getMonth()
+    const currentYear = new Date().getFullYear()
+    const yearStart = new Date(currentYear, 0, 1)
+
+    const where: any = {}
+    if (outletId) {
+      where.reviews = { some: { outletId } }
+    }
+
+    const customers = await prisma.customer.findMany({
+      where,
+      include: {
+        firstVisitOutlet: { select: { name: true, code: true } },
+        automationLogs: {
+          where: {
+            automationType: { in: ['birthday_whatsapp', 'birthday_email'] },
+            status: 'success',
+            sentAt: { gte: yearStart },
+          },
+          select: {
+            messageStage: true,
+          },
+        },
+      },
+      orderBy: { fullName: 'asc' },
+    })
+
+    const matchingCustomers = customers.filter(c => {
+      const d = new Date(c.birthDate)
+      return d.getMonth() === currentMonth
+    })
+
+    const results = matchingCustomers.map(c => {
+      const stages = c.automationLogs.map(l => l.messageStage)
+      return {
+        id: c.id,
+        fullName: c.fullName,
+        phone: c.phone,
+        email: c.email,
+        birthDate: c.birthDate,
+        firstVisitOutlet: c.firstVisitOutlet,
+        message5DaysStatus: stages.includes('five_days_before') ? 'send' : 'pending',
+        message1DayStatus: stages.includes('one_day_before') ? 'send' : 'pending',
+      }
+    })
+
+    res.json(results)
+  } catch (err) {
+    next(err)
+  }
+})
+
+// ─── GET /api/cms/customers/anniversaries ──────────────────────────────────────
+router.get('/anniversaries', async (req, res, next) => {
+  try {
+    const outletId = resolveOutletFilter(req)
+    const currentMonth = new Date().getMonth()
+    const currentYear = new Date().getFullYear()
+    const yearStart = new Date(currentYear, 0, 1)
+
+    const where: any = {}
+    if (outletId) {
+      where.reviews = { some: { outletId } }
+    }
+
+    const customers = await prisma.customer.findMany({
+      where: {
+        ...where,
+        anniversaryDate: { not: null },
+      },
+      include: {
+        firstVisitOutlet: { select: { name: true, code: true } },
+        automationLogs: {
+          where: {
+            automationType: { in: ['anniversary_whatsapp', 'anniversary_email'] },
+            status: 'success',
+            sentAt: { gte: yearStart },
+          },
+          select: {
+            messageStage: true,
+          },
+        },
+      },
+      orderBy: { fullName: 'asc' },
+    })
+
+    const matchingCustomers = customers.filter(c => {
+      if (!c.anniversaryDate) return false
+      const d = new Date(c.anniversaryDate)
+      return d.getMonth() === currentMonth
+    })
+
+    const results = matchingCustomers.map(c => {
+      const stages = c.automationLogs.map(l => l.messageStage)
+      return {
+        id: c.id,
+        fullName: c.fullName,
+        phone: c.phone,
+        email: c.email,
+        anniversaryDate: c.anniversaryDate,
+        firstVisitOutlet: c.firstVisitOutlet,
+        message5DaysStatus: stages.includes('five_days_before') ? 'send' : 'pending',
+        message1DayStatus: stages.includes('one_day_before') ? 'send' : 'pending',
+      }
+    })
+
+    res.json(results)
+  } catch (err) {
+    next(err)
+  }
+})
+
 // ─── GET /api/cms/customers/:id ───────────────────────────────────────────────
 // Full customer profile with visit history + reviews
 router.get('/:id', async (req, res, next) => {

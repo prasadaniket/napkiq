@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma'
 import { supabaseAdmin } from '../lib/supabase'
 
-const OLD_EMAIL = 'franchise@stoneoven.in'
+const OLD_EMAIL = 'franchise@napkiq.in'
 
 async function main() {
   // Find the staff record

@@ -32,6 +32,7 @@ const WASENDER_TEMPLATE_MAP: Record<string, string> = {
   welcome:      'welcome_whatsapp',
   promotional:  'promotional_whatsapp',
   announcement: 'announcement_whatsapp',
+  bounceback:   'bounceback_whatsapp',
 }
 
 // ─── WhatsApp ────────────────────────────────────────────────────────────────
@@ -54,7 +55,7 @@ export async function sendWhatsApp(payload: WhatsAppPayload): Promise<boolean> {
   try {
     // ── WaSenderAPI (temporary testing path) ─────────────────────────────
     if (process.env.WASENDER_API_KEY) {
-      const baseWord   = payload.templateName.replace('stoneoven_', '').split('_')[0]
+      const baseWord   = payload.templateName.replace('napkiq_', '').split('_')[0]
       const templateKey = WASENDER_TEMPLATE_MAP[baseWord]
       const tmpl       = templateKey ? getTemplate(templateKey) : null
       const text       = tmpl
@@ -121,7 +122,7 @@ export async function sendEmail(payload: EmailPayload): Promise<boolean> {
     // const resend = new Resend(process.env.RESEND_API_KEY)
     //
     // await resend.emails.send({
-    //   from:    process.env.RESEND_FROM_EMAIL ?? 'StoneOven <noreply@stoneoven.in>',
+    //   from:    process.env.RESEND_FROM_EMAIL ?? 'Napkiq <noreply@napkiq.in>',
     //   to:      payload.to,
     //   subject: payload.subject,
     //   html:    payload.html,
@@ -142,7 +143,7 @@ export function buildBirthdayWhatsApp(customerName: string, daysUntil: number): 
   return {
     customer_name: customerName,
     days_until:    daysUntil.toString(),
-    restaurant:    'StoneOven',
+    restaurant:    'Napkiq',
   }
 }
 
@@ -161,9 +162,9 @@ export function buildBirthdayEmail(customerName: string, daysUntil: number): Pic
           <h1 style="margin:0;font-size:24px;color:#fff">🎂 ${greeting}</h1>
         </div>
         <div style="padding:32px 24px">
-          <p>We'd love to celebrate your special day with you at <strong>StoneOven</strong>.</p>
+          <p>We'd love to celebrate your special day with you at <strong>Napkiq</strong>.</p>
           <p style="margin-top:16px">Visit any of our outlets and enjoy a complimentary treat on us. Show this email to our team.</p>
-          <p style="margin-top:32px;color:rgba(255,255,255,0.5);font-size:12px">StoneOven Restaurant · stoneoven.in</p>
+          <p style="margin-top:32px;color:rgba(255,255,255,0.5);font-size:12px">Napkiq Restaurant · napkiq.in</p>
         </div>
       </div>
     `,
@@ -185,9 +186,9 @@ export function buildAnniversaryEmail(customerName: string, daysUntil: number): 
           <h1 style="margin:0;font-size:24px;color:#F26522">💑 ${greeting}</h1>
         </div>
         <div style="padding:32px 24px">
-          <p>Celebrate your love at <strong>StoneOven</strong>. We'd love to be part of your special day.</p>
+          <p>Celebrate your love at <strong>Napkiq</strong>. We'd love to be part of your special day.</p>
           <p style="margin-top:16px">Book a table for two and enjoy a romantic dining experience.</p>
-          <p style="margin-top:32px;color:rgba(255,255,255,0.5);font-size:12px">StoneOven Restaurant · stoneoven.in</p>
+          <p style="margin-top:32px;color:rgba(255,255,255,0.5);font-size:12px">Napkiq Restaurant · napkiq.in</p>
         </div>
       </div>
     `,
@@ -203,9 +204,9 @@ export function buildReengagementEmail(customerName: string, daysSince: number):
           <h1 style="margin:0;font-size:24px;color:#fff">We miss you, ${customerName}! 👋</h1>
         </div>
         <div style="padding:32px 24px">
-          <p>It's been <strong>${daysSince} days</strong> since your last visit and we'd love to have you back at <strong>StoneOven</strong>.</p>
+          <p>It's been <strong>${daysSince} days</strong> since your last visit and we'd love to have you back at <strong>Napkiq</strong>.</p>
           <p style="margin-top:16px">Our kitchen is ready and your favourite table is waiting.</p>
-          <p style="margin-top:32px;color:rgba(255,255,255,0.5);font-size:12px">StoneOven Restaurant · stoneoven.in</p>
+          <p style="margin-top:32px;color:rgba(255,255,255,0.5);font-size:12px">Napkiq Restaurant · napkiq.in</p>
         </div>
       </div>
     `,
@@ -249,12 +250,12 @@ export function buildGenericEmail(opts: {
       <div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto;background:#111;color:#fff;border-radius:16px;overflow:hidden">
         ${imageBlock}
         <div style="background:#F26522;padding:24px;text-align:center">
-          <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.8);font-weight:600;letter-spacing:0.05em;text-transform:uppercase">StoneOven</p>
+          <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.8);font-weight:600;letter-spacing:0.05em;text-transform:uppercase">Napkiq</p>
         </div>
         <div style="padding:32px 24px">
           <p style="font-size:16px;line-height:1.7;color:#fff">${body}</p>
           ${linkBlock}
-          <p style="margin-top:32px;color:rgba(255,255,255,0.4);font-size:12px">StoneOven Restaurant · stoneoven.in</p>
+          <p style="margin-top:32px;color:rgba(255,255,255,0.4);font-size:12px">Napkiq Restaurant · napkiq.in</p>
         </div>
       </div>
     `,

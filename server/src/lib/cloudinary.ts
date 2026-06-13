@@ -9,4 +9,4 @@ cloudinary.config({
 
 export { cloudinary }
 
-export const MENU_FOLDER = 'StoneOven/menu'
+export const MENU_FOLDER = 'Napkiq/menu'

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { prisma } from '../../lib/prisma'
 import { requireAuth } from '../../middleware/auth'
+import { supabaseAdmin } from '../../lib/supabase'
 
 const router = Router()
 router.use(requireAuth)
@@ -96,8 +97,8 @@ router.get('/stats', async (req, res, next) => {
           newCustomersThisYear,
           reviewsThisWeek,
           visitsThisMonth,
-          birthdaysThisMonth,
-          anniversariesThisMonth,
+          birthdaysThisMonthRaw,
+          anniversariesThisMonthRaw,
         ] = await Promise.all([
           prisma.customer.count({ where: cWhere }),
           prisma.review.count({ where: rWhere }),
@@ -109,9 +110,19 @@ router.get('/stats', async (req, res, next) => {
           prisma.customer.count({ where: { ...cWhere, createdAt: { gte: startOf('year') } } }),
           prisma.review.count({ where: { ...rWhere, createdAt: { gte: startOf('week') } } }),
           prisma.customerVisit.count({ where: { ...vWhere, visitedAt: { gte: startOf('month') } } }),
-          prisma.customer.count({ where: { ...cWhere, birthDate: { gte: monthStart, lte: monthEnd } } }),
-          prisma.customer.count({ where: { ...cWhere, anniversaryDate: { gte: monthStart, lte: monthEnd } } }),
+          prisma.customer.findMany({
+            where: cWhere,
+            select: { birthDate: true },
+          }),
+          prisma.customer.findMany({
+            where: { ...cWhere, anniversaryDate: { not: null } },
+            select: { anniversaryDate: true },
+          }),
         ])
+
+        const currentMonth = new Date().getMonth()
+        const birthdaysThisMonth = (birthdaysThisMonthRaw as any[]).filter(c => new Date(c.birthDate).getMonth() === currentMonth).length
+        const anniversariesThisMonth = (anniversariesThisMonthRaw as any[]).filter(c => c.anniversaryDate && new Date(c.anniversaryDate).getMonth() === currentMonth).length
 
         return {
           outletId:              outlet.id,
@@ -174,8 +185,8 @@ router.get('/:id', async (req, res, next) => {
       newCustomersThisYear,
       reviewsThisWeek,
       visitsThisMonth,
-      birthdaysThisMonth,
-      anniversariesThisMonth,
+      birthdaysThisMonthRaw,
+      anniversariesThisMonthRaw,
       starDistribution,
       recentCustomers,
       recentReviews,
@@ -191,8 +202,14 @@ router.get('/:id', async (req, res, next) => {
       prisma.customer.count({ where: { ...cWhere, createdAt: { gte: startOf('year') } } }),
       prisma.review.count({ where: { ...rWhere, createdAt: { gte: startOf('week') } } }),
       prisma.customerVisit.count({ where: { ...vWhere, visitedAt: { gte: startOf('month') } } }),
-      prisma.customer.count({ where: { ...cWhere, birthDate: { gte: monthStart, lte: monthEnd } } }),
-      prisma.customer.count({ where: { ...cWhere, anniversaryDate: { gte: monthStart, lte: monthEnd } } }),
+      prisma.customer.findMany({
+        where: cWhere,
+        select: { birthDate: true },
+      }),
+      prisma.customer.findMany({
+        where: { ...cWhere, anniversaryDate: { not: null } },
+        select: { anniversaryDate: true },
+      }),
       // Star distribution for rating bar chart
       prisma.review.groupBy({
         by: ['stars'],
@@ -223,6 +240,10 @@ router.get('/:id', async (req, res, next) => {
       }),
     ])
 
+    const currentMonth = new Date().getMonth()
+    const birthdaysThisMonth = (birthdaysThisMonthRaw as any[]).filter(c => new Date(c.birthDate).getMonth() === currentMonth).length
+    const anniversariesThisMonth = (anniversariesThisMonthRaw as any[]).filter(c => c.anniversaryDate && new Date(c.anniversaryDate).getMonth() === currentMonth).length
+
     res.json({
       outlet,
       stats: {
@@ -244,6 +265,162 @@ router.get('/:id', async (req, res, next) => {
       recentReviews,
       recentVisits,
     })
+  } catch (err) {
+    next(err)
+  }
+})
+
+// DELETE /cms/outlets/:id
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const role = req.staff!.role
+    if (role !== 'admin' && role !== 'owner') {
+      res.status(403).json({ error: 'Permission denied' })
+      return
+    }
+
+    await prisma.outlet.update({
+      where: { id: req.params.id },
+      data: { isActive: false },
+    })
+
+    res.json({ ok: true })
+  } catch (err) {
+    next(err)
+  }
+})
+
+// POST /cms/outlets
+router.post('/', async (req, res, next) => {
+  try {
+    const role = req.staff!.role
+    if (role !== 'admin' && role !== 'owner') {
+      res.status(403).json({ error: 'Permission denied' })
+      return
+    }
+
+    const {
+      name,
+      code,
+      slug,
+      location,
+      address,
+      googlePlaceId,
+      googleMapsUrl,
+      instagramUrl,
+      facebookUrl,
+      ownerName,
+      ownerEmail,
+      ownerPhone,
+      ownerUsername,
+      ownerPassword,
+    } = req.body
+
+    if (!name || !code || !slug || !googlePlaceId) {
+      res.status(400).json({ error: 'Missing required outlet fields (name, code, slug, googlePlaceId)' })
+      return
+    }
+
+    // 1. Create the outlet in Postgres
+    const outlet = await prisma.outlet.create({
+      data: {
+        name,
+        code: code.toUpperCase(),
+        slug: slug.toLowerCase(),
+        location: location ?? null,
+        address: address ?? null,
+        googlePlaceId,
+        googleMapsUrl: googleMapsUrl ?? null,
+        instagramUrl: instagramUrl ?? null,
+        facebookUrl: facebookUrl ?? null,
+        isActive: true,
+      },
+    })
+
+    // 2. Create the franchise owner in Supabase Auth & Staff table if email is provided
+    if (ownerEmail && ownerPassword && ownerUsername && ownerName) {
+      try {
+        // Create user in Supabase
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email: ownerEmail,
+          password: ownerPassword,
+          email_confirm: true,
+        })
+
+        if (authError || !authData.user) {
+          throw new Error(authError?.message ?? 'Supabase user creation failed')
+        }
+
+        // Create the staff member record linked to this outlet
+        await prisma.staff.create({
+          data: {
+            id: authData.user.id,
+            email: ownerEmail,
+            username: ownerUsername.toLowerCase(),
+            fullName: ownerName,
+            phone: ownerPhone ?? null,
+            role: 'franchise_owner',
+            isAdmin: false,
+            assignedOutletId: outlet.id,
+            isActive: true,
+          },
+        })
+      } catch (err: any) {
+        console.error('Error creating franchise owner:', err)
+        // Non-fatal for the outlet creation, but notify in response
+        res.status(201).json({
+          outlet,
+          warning: `Outlet created but franchise owner setup failed: ${err.message}`,
+        })
+        return
+      }
+    }
+
+    // 3. Clone the Boisar Menu for this new outlet as a convenience seed!
+    try {
+      const boisar = await prisma.outlet.findFirst({
+        where: { OR: [{ code: 'BSR' }, { slug: 'boisar' }] },
+      })
+
+      if (boisar) {
+        const boisarCategories = await prisma.menuCategory.findMany({
+          where: { outletId: boisar.id, isActive: true },
+          include: { items: { orderBy: { displayOrder: 'asc' } } },
+        })
+
+        for (const sourceCat of boisarCategories) {
+          const targetCat = await prisma.menuCategory.create({
+            data: {
+              name: sourceCat.name,
+              displayOrder: sourceCat.displayOrder,
+              isActive: true,
+              outletId: outlet.id,
+            },
+          })
+
+          for (const sourceItem of sourceCat.items) {
+            await prisma.menuItem.create({
+              data: {
+                categoryId: targetCat.id,
+                name: sourceItem.name,
+                description: sourceItem.description,
+                price: sourceItem.price,
+                priceVariants: sourceItem.priceVariants ?? undefined,
+                isVeg: sourceItem.isVeg,
+                imageUrl: sourceItem.imageUrl,
+                isAvailable: sourceItem.isAvailable,
+                displayOrder: sourceItem.displayOrder,
+              },
+            })
+          }
+        }
+      }
+    } catch (menuErr) {
+      console.error('Failed to clone menu for new outlet:', menuErr)
+      // Non-fatal, return outlet
+    }
+
+    res.status(201).json({ outlet })
   } catch (err) {
     next(err)
   }

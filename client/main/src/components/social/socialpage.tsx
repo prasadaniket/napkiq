@@ -94,7 +94,7 @@ export default function SocialPage() {
     <div className="max-w-2xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold text-secondary mb-1">Find Us Online</h1>
       <p className="text-sm text-secondary-light mb-6">
-        Follow Stone Oven on social media
+        Follow Napkiq on social media
       </p>
 
       <div className="space-y-6">

@@ -6,7 +6,7 @@
     "trigger": "automatic",
     "triggerDesc": "5 days before & 1 day before birthday",
     "subject": null,
-    "body": "Hey {customer_name}, your birthday is coming up! 🎂 Celebrate with us at StoneOven — we have something special waiting for you.",
+    "body": "Hey {customer_name}, your birthday is coming up! 🎂 Celebrate with us at Napkiq — we have something special waiting for you.",
     "imageUrl": null,
     "linkUrl": null,
     "isActive": true
@@ -18,7 +18,7 @@
     "trigger": "automatic",
     "triggerDesc": "5 days before & 1 day before birthday",
     "subject": "Your birthday is coming up, {name}!",
-    "body": "We'd love to celebrate your special day with you at StoneOven. Visit any outlet and enjoy a complimentary treat on us.",
+    "body": "We'd love to celebrate your special day with you at Napkiq. Visit any outlet and enjoy a complimentary treat on us.",
     "imageUrl": null,
     "linkUrl": null,
     "isActive": true
@@ -30,8 +30,8 @@
     "trigger": "automatic",
     "triggerDesc": "5 days before & 1 day before anniversary",
     "subject": null,
-    "body": "Hey {customer_name}, your anniversary is almost here! 💑 Come celebrate at StoneOven with a romantic dining experience.",
-    "imageUrl": null,
+    "body": "Hey {customer_name}, your anniversary is almost here! 💑 Come celebrate at Napkiq with a romantic dining experience.",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779719260/Napkiq/automation/template_anniversary_whatsapp.png",
     "linkUrl": null,
     "isActive": true
   },
@@ -42,7 +42,7 @@
     "trigger": "automatic",
     "triggerDesc": "5 days before & 1 day before anniversary",
     "subject": "Your anniversary is coming up, {name}!",
-    "body": "Celebrate your love at StoneOven. Book a table for two and enjoy a romantic dining experience curated just for you.",
+    "body": "Celebrate your love at Napkiq. Book a table for two and enjoy a romantic dining experience curated just for you.",
     "imageUrl": null,
     "linkUrl": null,
     "isActive": true
@@ -54,8 +54,8 @@
     "trigger": "automatic",
     "triggerDesc": "30 days since last visit",
     "subject": null,
-    "body": "Hey {customer_name}, we miss you! 👋 It's been a while since your last visit — come back to StoneOven, your favourite table is waiting.",
-    "imageUrl": null,
+    "body": "Hey {customer_name}, we miss you! 👋 It's been a while since your last visit — come back to Napkiq, your favourite table is waiting.",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779719255/Napkiq/automation/template_reengagement_whatsapp.png",
     "linkUrl": null,
     "isActive": true
   },
@@ -78,8 +78,8 @@
     "trigger": "automatic",
     "triggerDesc": "Sent on first customer registration",
     "subject": null,
-    "body": "Welcome to StoneOven, {customer_name}! 🍽️ We're thrilled to have you. Scan your QR on every visit to unlock rewards and surprises.",
-    "imageUrl": null,
+    "body": "Welcome to Napkiq, {customer_name}! 🍽️ We're thrilled to have you. Scan your QR on every visit to unlock rewards and surprises.",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779719224/Napkiq/automation/template_welcome_whatsapp.png",
     "linkUrl": null,
     "isActive": true
   },
@@ -89,8 +89,8 @@
     "channel": "email",
     "trigger": "automatic",
     "triggerDesc": "Sent on first customer registration",
-    "subject": "Welcome to StoneOven, {name}!",
-    "body": "We're thrilled to welcome you to the StoneOven family. Every visit earns you loyalty points and exclusive birthday & anniversary surprises.",
+    "subject": "Welcome to Napkiq, {name}!",
+    "body": "We're thrilled to welcome you to the Napkiq family. Every visit earns you loyalty points and exclusive birthday & anniversary surprises.",
     "imageUrl": null,
     "linkUrl": null,
     "isActive": true
@@ -102,10 +102,10 @@
     "trigger": "manual",
     "triggerDesc": "Admin triggers manually to active customers",
     "subject": null,
-    "body": "Hey {customer_name}! 🎉 We have a special offer just for you at StoneOven. Visit us this week and enjoy exclusive deals.",
-    "imageUrl": null,
+    "body": "Hey {customer_name}! 🎉 We have a special offer just for you at Napkiq. Visit us this week and enjoy exclusive deals.",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779719299/Napkiq/automation/template_promotional_whatsapp.png",
     "linkUrl": null,
-    "isActive": false
+    "isActive": true
   },
   "promotional_email": {
     "key": "promotional_email",
@@ -113,8 +113,8 @@
     "channel": "email",
     "trigger": "manual",
     "triggerDesc": "Admin triggers manually to active customers",
-    "subject": "Special offer for you at StoneOven!",
-    "body": "We have an exclusive offer waiting for you at StoneOven. Visit us this week and enjoy special deals curated just for our loyal customers.",
+    "subject": "Special offer for you at Napkiq!",
+    "body": "We have an exclusive offer waiting for you at Napkiq. Visit us this week and enjoy special deals curated just for our loyal customers.",
     "imageUrl": null,
     "linkUrl": null,
     "isActive": false
@@ -126,10 +126,10 @@
     "trigger": "manual",
     "triggerDesc": "Admin triggers manually to all customers",
     "subject": null,
-    "body": "Exciting news, {customer_name}! 🍽️ We've added something new to our menu at StoneOven. Come in and be the first to try it!",
-    "imageUrl": null,
+    "body": "Exciting news, {customer_name}! 🍽️ We've added something new to our menu at Napkiq. Come in and be the first to try it!",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779719309/Napkiq/automation/template_announcement_whatsapp.png",
     "linkUrl": null,
-    "isActive": false
+    "isActive": true
   },
   "announcement_email": {
     "key": "announcement_email",
@@ -137,10 +137,34 @@
     "channel": "email",
     "trigger": "manual",
     "triggerDesc": "Admin triggers manually to all customers",
-    "subject": "Something new at StoneOven!",
-    "body": "We are excited to announce a new addition to our menu. Come visit us at StoneOven and be among the first to experience it.",
+    "subject": "Something new at Napkiq!",
+    "body": "We are excited to announce a new addition to our menu. Come visit us at Napkiq and be among the first to experience it.",
     "imageUrl": null,
     "linkUrl": null,
     "isActive": false
+  },
+  "bounceback_whatsapp": {
+    "key": "bounceback_whatsapp",
+    "label": "Bounce-back Campaign",
+    "channel": "whatsapp",
+    "trigger": "automatic",
+    "triggerDesc": "Sent 2 hours after first scan/visit",
+    "subject": null,
+    "body": "Hey {customer_name}! 🍕 Thank you for dining with us at {outlet_name} today. We hope you loved our pizza! Come visit us again in the next 14 days and get a Free Cheese Garlic Bread on us! Just show this message to your server. Code: BOUNCE-{outlet_code}",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779742980/Napkiq/automation/template_bounceback_whatsapp.png",
+    "linkUrl": null,
+    "isActive": true
+  },
+  "bounceback_email": {
+    "key": "bounceback_email",
+    "label": "Bounce-back Campaign",
+    "channel": "email",
+    "trigger": "automatic",
+    "triggerDesc": "Sent 2 hours after first scan/visit",
+    "subject": "Thank you for visiting {outlet_name}! Here is a special treat...",
+    "body": "We hope you enjoyed your woodfired pizza today. Visit us again within the next 14 days and enjoy a complimentary Free Cheese Garlic Bread on us! Simply present this email on your next visit.",
+    "imageUrl": "https://res.cloudinary.com/dfc95tllh/image/upload/v1779743003/Napkiq/automation/template_bounceback_email.png",
+    "linkUrl": null,
+    "isActive": true
   }
 }

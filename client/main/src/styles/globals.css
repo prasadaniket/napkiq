@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,47 +8,60 @@
   }
 
   html {
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply bg-neutral-off-white text-secondary;
+    @apply bg-white text-secondary;
     min-height: 100vh;
     max-width: 768px;
     margin-left: auto;
     margin-right: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif), Georgia, ui-serif, serif;
   }
 }
 
 @layer components {
   /* Gradient background — buttons, CTAs, block elements */
   .btn-gradient {
-    background: linear-gradient(to bottom, #F2A65A, #E88C3A, #D96A1D);
+    background: linear-gradient(to bottom, #E85D52, #D64238, #A62B22);
     color: #ffffff;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn-gradient:hover:not(:disabled) {
-    filter: brightness(1.08);
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(214, 66, 56, 0.25);
   }
   .btn-gradient:active:not(:disabled) {
-    filter: brightness(0.9);
+    filter: brightness(0.95);
+    transform: translateY(0);
   }
 
-  /* Outline variant — border + text use mid-gradient colour, hover fills */
+  /* Outline variant */
   .btn-gradient-outline {
     background: transparent;
-    border: 2px solid #E88C3A;
-    color: #E88C3A;
+    border: 2px solid #D64238;
+    color: #D64238;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn-gradient-outline:hover:not(:disabled) {
-    background: linear-gradient(to bottom, #F2A65A, #E88C3A, #D96A1D);
+    background: linear-gradient(to bottom, #E85D52, #D64238, #A62B22);
     border-color: transparent;
     color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(214, 66, 56, 0.15);
   }
 
   /* Gradient text */
   .text-gradient-primary {
-    background: linear-gradient(to bottom, #F2A65A, #E88C3A, #D96A1D);
+    background: linear-gradient(to bottom, #E85D52, #D64238, #A62B22);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -59,12 +70,20 @@
 
   /* Gradient background for non-button block elements */
   .bg-gradient-primary {
-    background: linear-gradient(to bottom, #F2A65A, #E88C3A, #D96A1D);
+    background: linear-gradient(to bottom, #E85D52, #D64238, #A62B22);
   }
 
-  /* Soft tint accent — replaces bg-primary/10 */
+  /* Soft tint accent */
   .accent-tint-primary {
-    background-color: rgba(232, 140, 58, 0.12);
+    background-color: rgba(214, 66, 56, 0.08);
+  }
+
+  /* Glass card utility */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 }
 

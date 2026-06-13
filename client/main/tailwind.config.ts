@@ -10,23 +10,23 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#F26522',
-          hover: '#D9551A',
-          light: '#FF7F45',
+          DEFAULT: '#D64238',
+          hover: '#B82E25',
+          light: '#E85D52',
         },
         secondary: {
-          DEFAULT: '#1A1A1A',
-          light: '#808080',
+          DEFAULT: '#00021D',
+          light: '#5C5E70',
         },
         tertiary: {
           DEFAULT: '#FFB800',
           hover: '#E6A600',
         },
         neutral: {
-          dark: '#1A1A1A',
-          medium: '#808080',
-          light: '#CCCCCC',
-          'off-white': '#F5F5F5',
+          dark: '#00021D',
+          medium: '#5C5E70',
+          light: '#E2E3E8',
+          'off-white': '#efeeeb',
           white: '#FFFFFF',
         },
         success: '#27AE60',
@@ -35,7 +35,8 @@ const config: Config = {
         info: '#3498DB',
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+        sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'ui-serif', 'serif'],
       },
     },
   },

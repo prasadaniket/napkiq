@@ -92,8 +92,8 @@ router.get('/stats', async (req, res, next) => {
       newReviewsThisWeek,
       totalVisitsThisMonth,
       totalVisitsThisYear,
-      birthdaysThisMonth,
-      anniversariesThisMonth,
+      birthdaysThisMonthRaw,
+      anniversariesThisMonthRaw,
     ] = await Promise.all([
       prisma.customer.count({ where: customerWhere }),
       prisma.review.count({ where: reviewWhere }),
@@ -119,9 +119,19 @@ router.get('/stats', async (req, res, next) => {
       prisma.customerVisit.count({ where: { ...visitWhere, visitedAt: { gte: startOf('year') } } }),
 
       // Birthdays & anniversaries this calendar month
-      prisma.customer.count({ where: { ...customerWhere, birthDate: { gte: monthStart, lte: monthEnd } } }),
-      prisma.customer.count({ where: { ...customerWhere, anniversaryDate: { gte: monthStart, lte: monthEnd } } }),
+      prisma.customer.findMany({
+        where: customerWhere,
+        select: { birthDate: true },
+      }),
+      prisma.customer.findMany({
+        where: { ...customerWhere, anniversaryDate: { not: null } },
+        select: { anniversaryDate: true },
+      }),
     ])
+
+    const currentMonth = new Date().getMonth()
+    const birthdaysThisMonth = (birthdaysThisMonthRaw as any[]).filter(c => new Date(c.birthDate).getMonth() === currentMonth).length
+    const anniversariesThisMonth = (anniversariesThisMonthRaw as any[]).filter(c => c.anniversaryDate && new Date(c.anniversaryDate).getMonth() === currentMonth).length
 
     res.json({
       totalCustomers,

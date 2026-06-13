@@ -7,7 +7,7 @@ export const firstVisitFormSchema = z.object({
   birthDate: z.string().min(1, 'Birth date is required'),
   maritalStatus: z.enum(['Married', 'Unmarried']),
   anniversaryDate: z.string().optional(),
-  gender: z.enum(['Male', 'Female', 'Transgender', 'RatherNotSay']),
+  gender: z.enum(['Male', 'Female', 'RatherNotSay']),
   stars: z.number().min(1, 'Please rate your experience').max(5),
   reviewText: z.string().max(1000).optional(),
 }).superRefine((data, ctx) => {

@@ -56,7 +56,7 @@ router.get('/', async (req, res, next) => {
         take: size,
         orderBy: { visitedAt: sortDir },
         include: {
-          customer: { select: { id: true, fullName: true, phone: true } },
+          customer: { select: { id: true, fullName: true, phone: true, totalVisits: true } },
           outlet:   { select: { name: true, code: true } },
         },
       }),
@@ -70,7 +70,7 @@ router.get('/', async (req, res, next) => {
     const deviceCustomers = anonymousDeviceIds.length > 0
       ? await prisma.customer.findMany({
           where: { deviceId: { in: anonymousDeviceIds } },
-          select: { id: true, deviceId: true, fullName: true, phone: true },
+          select: { id: true, deviceId: true, fullName: true, phone: true, totalVisits: true },
         })
       : []
     const deviceMap = new Map(deviceCustomers.map(c => [c.deviceId, c]))
@@ -79,9 +79,10 @@ router.get('/', async (req, res, next) => {
       const linked = v.customer ?? deviceMap.get(v.deviceId) ?? null
       return {
         ...v,
-        customerId: v.customerId ?? linked?.id ?? null,
-        customer:   linked ? { fullName: linked.fullName, phone: linked.phone } : null,
-        converted:  !!linked,
+        customerId:       v.customerId ?? linked?.id ?? null,
+        customer:         linked ? { fullName: linked.fullName, phone: linked.phone } : null,
+        converted:        !!linked,
+        isRepeatVisitor:  linked ? (linked.totalVisits > 1) : false,
       }
     })
 

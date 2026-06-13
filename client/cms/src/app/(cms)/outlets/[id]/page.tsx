@@ -8,25 +8,42 @@ import { useAuth } from '@/context/AuthContext'
 import { format } from 'date-fns'
 import ReviewCard from '@/components/cms/ReviewCard'
 import type { OutletDetail } from '@/types/api'
+import { 
+  Users, 
+  Star, 
+  CalendarDays, 
+  AlertTriangle, 
+  ArrowLeft, 
+  MapPin, 
+  Cake, 
+  Heart, 
+  ChevronRight,
+  TrendingUp,
+  Sparkles,
+  Clock,
+  ExternalLink,
+  MessageSquare
+} from 'lucide-react'
 
-// ─── Star Distribution Chart ────────────────────────────────────────────────────
+// ─── Star Distribution Component ────────────────────────────────────────────────
 function StarDistribution({ distribution, total }: { distribution: { stars: number; count: number }[]; total: number }) {
   const byStars = Object.fromEntries(distribution.map(d => [d.stars, d.count]))
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div className="space-y-3.5 select-none">
       {[5, 4, 3, 2, 1].map(s => {
         const count = byStars[s] ?? 0
         const pct = total > 0 ? (count / total) * 100 : 0
         return (
-          <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 12, color: 'var(--color-text-2)', width: 14, textAlign: 'right' }}>{s}</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b" stroke="none">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-            <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 99, overflow: 'hidden' }}>
-              <div style={{ width: `${pct}%`, height: '100%', background: '#f59e0b', borderRadius: 99, transition: 'width 0.6s ease' }} />
+          <div key={s} className="flex items-center gap-3">
+            <span className="text-xs font-bold text-slate-500 w-3.5 text-right">{s}</span>
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-500" 
+                style={{ width: `${pct}%` }}
+              />
             </div>
-            <span style={{ fontSize: 11, color: 'var(--color-text-3)', width: 28, textAlign: 'right' }}>{count}</span>
+            <span className="text-xs font-bold text-slate-400 w-6 text-right">{count}</span>
           </div>
         )
       })}
@@ -34,21 +51,63 @@ function StarDistribution({ distribution, total }: { distribution: { stars: numb
   )
 }
 
-// ─── Stat Tile ──────────────────────────────────────────────────────────────────
-function Tile({ label, value, sub, accent }: { label: string; value: string | number | null; sub?: string; accent?: string }) {
+// ─── KPI Card Component ──────────────────────────────────────────────────────────
+function KpiTile({ 
+  label, 
+  value, 
+  sub, 
+  accent, 
+  icon 
+}: { 
+  label: string
+  value: string | number | null
+  sub?: string
+  accent?: 'violet' | 'amber' | 'emerald' | 'rose' | 'default'
+  icon: React.ReactNode 
+}) {
+  const accentClasses = {
+    violet: 'border-violet-100 hover:border-violet-200/80 bg-white text-violet-600',
+    amber: 'border-amber-100 hover:border-amber-200/80 bg-white text-amber-500',
+    emerald: 'border-emerald-100 hover:border-emerald-200/80 bg-white text-emerald-600',
+    rose: 'border-rose-100 hover:border-rose-200/80 bg-white text-rose-500',
+    default: 'border-slate-100 hover:border-slate-200 bg-white text-slate-500'
+  }
+
+  const iconBgClasses = {
+    violet: 'bg-violet-50 text-violet-600',
+    amber: 'bg-amber-50 text-amber-500',
+    emerald: 'bg-emerald-50 text-emerald-600',
+    rose: 'bg-rose-50 text-[#D64238]',
+    default: 'bg-slate-50 text-slate-500'
+  }
+
   return (
-    <div style={{ padding: '16px 20px', background: 'var(--color-surface-2)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
-      <div style={{ fontSize: 11, color: 'var(--color-text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>{label}</div>
-      <div style={{ fontSize: 26, fontWeight: 700, color: accent ?? 'var(--color-text-1)', lineHeight: 1 }}>{value ?? '—'}</div>
-      {sub && <div style={{ fontSize: 11, color: 'var(--color-text-3)', marginTop: 5 }}>{sub}</div>}
+    <div className={`group relative overflow-hidden rounded-2xl border p-4 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${accentClasses[accent ?? 'default']}`}>
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</span>
+        <div className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all ${iconBgClasses[accent ?? 'default']}`}>
+          {icon}
+        </div>
+      </div>
+      <div className="mt-3 flex items-baseline gap-1.5">
+        <span className="text-xl font-black text-slate-800 leading-tight">
+          {value ?? '—'}
+        </span>
+      </div>
+      {sub && (
+        <span className="block text-[10px] font-bold text-slate-400 mt-1">
+          {sub}
+        </span>
+      )}
     </div>
   )
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────────
+// ─── Main Page Component ─────────────────────────────────────────────────────────
 export default function OutletDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { isOwnerOrAbove } = useAuth()
+  
   const [data, setData] = useState<OutletDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -61,16 +120,27 @@ export default function OutletDetailPage() {
   }, [id])
 
   if (loading) return (
-    <div style={{ padding: 64, textAlign: 'center', color: 'var(--color-text-3)' }}>
-      Loading outlet data…
+    <div className="page-content flex flex-col items-center justify-center py-32 space-y-4">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D64238]" />
+      <span className="text-sm font-semibold text-slate-400">Loading branch dashboard...</span>
     </div>
   )
 
   if (error || !data) return (
-    <div>
-      <div className="page-header">
-        <Link href="/outlets" style={{ textDecoration: 'none', color: 'var(--color-text-3)', fontSize: 13, display: 'inline-block', marginBottom: 12 }}>← Back to Outlets</Link>
-        <h1 className="page-title">Outlet not found</h1>
+    <div className="page-content py-16 px-4">
+      <div className="max-w-md mx-auto text-center rounded-3xl border border-slate-100 bg-white p-8 shadow-sm">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-[#D64238] mx-auto mb-4">
+          <AlertTriangle className="h-6 w-6" />
+        </div>
+        <h3 className="text-lg font-bold text-slate-900">Branch not found</h3>
+        <p className="mt-1.5 text-sm text-slate-500 font-medium">
+          The branch details or operational analytics could not be retrieved.
+        </p>
+        <Link href="/outlets" className="inline-block mt-6 no-underline">
+          <button className="h-10 px-5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all border-none cursor-pointer">
+            ← Back to Outlets
+          </button>
+        </Link>
       </div>
     </div>
   )
@@ -78,146 +148,266 @@ export default function OutletDetailPage() {
   const { outlet, stats, recentCustomers, recentReviews, recentVisits } = data
 
   return (
-    <div>
-      {/* Page Header */}
-      <div className="page-header">
-        <Link href="/outlets" style={{ textDecoration: 'none', color: 'var(--color-text-3)', fontSize: 13, display: 'inline-block', marginBottom: 12 }}>
-          ← All Outlets
-        </Link>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <div>
-            <h1 className="page-title">{outlet.name}</h1>
-            <div style={{ display: 'flex', gap: 8, marginTop: 6, alignItems: 'center' }}>
-              <span style={{ display: 'inline-flex', padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-2)' }}>{outlet.code}</span>
-              {outlet.address && <span style={{ fontSize: 12, color: 'var(--color-text-3)' }}>· {outlet.address}</span>}
+    <div className="page-content" style={{ padding: '24px 28px 32px' }}>
+      <div className="space-y-6">
+        
+        {/* ── Beautiful Welcoming Hero Header ── */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-r from-slate-50 via-white to-orange-50/20 p-6 md:p-8">
+          <div className="absolute right-10 top-0 -z-10 h-32 w-32 rounded-full bg-orange-100/30 blur-3xl" />
+          <div className="absolute left-1/3 bottom-0 -z-10 h-24 w-24 rounded-full bg-red-100/10 blur-2xl" />
+
+          {/* Sleek back navigation */}
+          <Link href="/outlets" className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 hover:text-[#D64238] transition-colors mb-4 no-underline group select-none">
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+            <span>All Outlets</span>
+          </Link>
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <span className="text-[10px] font-extrabold uppercase bg-red-50 text-[#D64238] px-1.5 py-0.5 rounded-md border border-red-100/30">
+                  {outlet.code}
+                </span>
+                <span>Branch Dashboard</span>
+              </div>
+              <h1 className="mt-2 text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+                {outlet.name}
+              </h1>
+              
+              {outlet.address && (
+                <div className="flex items-center gap-1.5 mt-2 text-sm font-semibold text-slate-400">
+                  <MapPin className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                  <span>{outlet.address}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {outlet.googleMapsUrl && (
+                <a 
+                  href={outlet.googleMapsUrl} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="inline-flex items-center gap-1 h-10 px-4 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-[0_2px_4px_rgba(0,0,0,0.02)] border border-slate-100 select-none no-underline cursor-pointer"
+                >
+                  <MapPin className="h-4 w-4 text-[#D64238]" />
+                  <span>Google Maps</span>
+                </a>
+              )}
+
+              <Link href={`/customers?outletId=${outlet.id}`} className="no-underline">
+                <button className="h-10 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-[0_2px_4px_rgba(0,0,0,0.02)] border-none select-none cursor-pointer">
+                  All Customers
+                </button>
+              </Link>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            {outlet.googleMapsUrl && (
-              <a href={outlet.googleMapsUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                <button className="btn-ghost" style={{ gap: 6, fontSize: 13 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  Google Maps
-                </button>
-              </a>
-            )}
-            <Link href={`/customers?outletId=${outlet.id}`} style={{ textDecoration: 'none' }}>
-              <button className="btn-ghost" style={{ fontSize: 13 }}>All Customers</button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="page-content">
-
-        {/* Primary Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 16, marginBottom: 28 }}>
-          <Tile label="Total Customers"   value={stats.totalCustomers}   sub={`+${stats.newCustomersThisMonth} this month`} accent="var(--color-primary)" />
-          <Tile label="Avg Rating"        value={stats.averageRating ? `${stats.averageRating.toFixed(1)} ★` : '—'} sub={`${stats.totalReviews} reviews`} accent="#f59e0b" />
-          <Tile label="Visits This Month" value={stats.visitsThisMonth}  sub={`${stats.totalVisits} all time`} />
-          <Tile label="At Risk (30d+)"    value={stats.inactiveCustomers} sub="no recent visit" accent={stats.inactiveCustomers > 10 ? 'var(--color-danger)' : undefined} />
-          <Tile label="New This Week"     value={stats.newCustomersThisWeek} sub="customers" />
-          <Tile label="Reviews This Week" value={stats.reviewsThisWeek} />
-          <Tile label="Birthdays"         value={stats.birthdaysThisMonth} sub="this month" accent="#f59e0b" />
-          <Tile label="Anniversaries"     value={stats.anniversariesThisMonth} sub="this month" />
         </div>
 
-        {/* Two-column layout: Rating chart + Activity feed */}
-        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24, marginBottom: 28, alignItems: 'start' }}>
+        {/* ── Primary KPI Summary Cards Row ── */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8 select-none">
+          
+          <KpiTile 
+            label="Total Customers" 
+            value={stats.totalCustomers} 
+            sub={`+${stats.newCustomersThisMonth} this month`} 
+            accent="violet"
+            icon={<Users className="h-4 w-4" />}
+          />
 
-          {/* Rating Distribution */}
-          <div className="card">
-            <div className="section-title">Rating Distribution</div>
+          <KpiTile 
+            label="Avg Rating" 
+            value={stats.averageRating ? `${stats.averageRating.toFixed(1)} ★` : '—'} 
+            sub={`${stats.totalReviews} reviews`} 
+            accent="amber"
+            icon={<Star className="h-4 w-4 fill-amber-400 text-amber-400" />}
+          />
+
+          <KpiTile 
+            label="Visits This Month" 
+            value={stats.visitsThisMonth} 
+            sub={`${stats.totalVisits} total visits`} 
+            accent="emerald"
+            icon={<CalendarDays className="h-4 w-4" />}
+          />
+
+          <KpiTile 
+            label="At Risk (30d+)" 
+            value={stats.inactiveCustomers} 
+            sub="no recent visit" 
+            accent={stats.inactiveCustomers > 10 ? 'rose' : 'default'}
+            icon={<AlertTriangle className="h-4 w-4" />}
+          />
+
+          <KpiTile 
+            label="New This Week" 
+            value={stats.newCustomersThisWeek} 
+            sub="new customers" 
+            accent="default"
+            icon={<TrendingUp className="h-4 w-4 text-emerald-500" />}
+          />
+
+          <KpiTile 
+            label="Reviews This Week" 
+            value={stats.reviewsThisWeek} 
+            sub="new feedback"
+            accent="default"
+            icon={<MessageSquare className="h-4 w-4" />}
+          />
+
+          {/* Clickable Celebration Badges */}
+          <Link href={`/birthdays?outletId=${outlet.id}`} className="no-underline">
+            <KpiTile 
+              label="Birthdays" 
+              value={stats.birthdaysThisMonth} 
+              sub="this month" 
+              accent="amber"
+              icon={<Cake className="h-4 w-4" />}
+            />
+          </Link>
+
+          <Link href={`/anniversaries?outletId=${outlet.id}`} className="no-underline">
+            <KpiTile 
+              label="Anniversaries" 
+              value={stats.anniversariesThisMonth} 
+              sub="this month" 
+              accent="violet"
+              icon={<Heart className="h-4 w-4 fill-indigo-100" />}
+            />
+          </Link>
+
+        </div>
+
+        {/* ── Two Column Dashboard Feed Layout ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          
+          {/* Column A (Left Column - 1 part): Rating Distribution */}
+          <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.03)] space-y-5">
+            <div>
+              <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">Rating Distribution</h3>
+              <p className="text-[10px] font-semibold text-slate-400 mt-0.5">Summary of user experience feedback metrics</p>
+            </div>
+
             {stats.totalReviews > 0 ? (
-              <>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 20 }}>
-                  <span style={{ fontSize: 40, fontWeight: 800, color: '#f59e0b', lineHeight: 1 }}>
+              <div className="space-y-5">
+                <div className="flex items-baseline gap-1.5 mb-2 select-none">
+                  <span className="text-4.5xl font-black text-slate-800 leading-none">
                     {stats.averageRating?.toFixed(1) ?? '—'}
                   </span>
-                  <span style={{ fontSize: 18, color: '#f59e0b' }}>★</span>
-                  <span style={{ fontSize: 13, color: 'var(--color-text-3)' }}>/ 5.0</span>
+                  <Star className="h-5 w-5 fill-amber-400 text-amber-400 self-center mb-1" />
+                  <span className="text-xs font-bold text-slate-400">/ 5.0 rating</span>
                 </div>
                 <StarDistribution distribution={stats.starDistribution} total={stats.totalReviews} />
-              </>
+              </div>
             ) : (
-              <div style={{ color: 'var(--color-text-3)', fontSize: 13, padding: '16px 0' }}>No reviews yet.</div>
-            )}
-          </div>
-
-          {/* Recent Visits Feed */}
-          <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <div className="section-title" style={{ margin: 0 }}>Recent Visits</div>
-              <Link href={`/visits?outletId=${outlet.id}`} style={{ fontSize: 12, color: 'var(--color-primary)', textDecoration: 'none' }}>View all →</Link>
-            </div>
-            {recentVisits.length === 0 ? (
-              <div style={{ color: 'var(--color-text-3)', fontSize: 13, padding: '12px 0' }}>No visits yet.</div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {recentVisits.map(v => (
-                  <div key={v.id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{
-                      display: 'inline-flex', padding: '2px 8px', borderRadius: 99, fontSize: 10, fontWeight: 600,
-                      background: v.visitType === 'qr_scan' ? 'rgba(59,130,246,0.12)' : 'rgba(34,197,94,0.12)',
-                      color: v.visitType === 'qr_scan' ? 'var(--color-info)' : 'var(--color-success)',
-                      flexShrink: 0,
-                    }}>
-                      {v.visitType === 'qr_scan' ? 'QR' : 'Pay'}
-                    </span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-1)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {v.customer?.fullName ?? 'Unknown'}
-                      </div>
-                      <div style={{ fontSize: 11, color: 'var(--color-text-3)' }}>{v.customer?.phone}</div>
-                    </div>
-                    <div style={{ fontSize: 11, color: 'var(--color-text-3)', flexShrink: 0 }}>
-                      {format(new Date(v.visitedAt), 'dd MMM, HH:mm')}
-                    </div>
-                  </div>
-                ))}
+              <div className="text-center py-8 text-xs font-semibold text-slate-400">
+                No customer reviews yet.
               </div>
             )}
           </div>
+
+          {/* Column B (Right Column - 2 parts): Recent Visits Feed */}
+          <div className="lg:col-span-2 rounded-3xl border border-slate-100 bg-white p-6 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.03)] flex flex-col justify-between min-h-[290px]">
+            <div>
+              <div className="flex items-center justify-between border-b border-slate-50 pb-4 mb-4 select-none">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">Recent Visits</h3>
+                  <p className="text-[10px] font-semibold text-slate-400 mt-0.5">Real-time arrival feed of active customers</p>
+                </div>
+                <Link href={`/visits?outletId=${outlet.id}`} className="inline-flex items-center gap-0.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors no-underline">
+                  <span>View all</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              {recentVisits.length === 0 ? (
+                <div className="text-center py-12 text-xs font-semibold text-slate-400">
+                  No visits recorded yet.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {recentVisits.map(v => (
+                    <div 
+                      key={v.id} 
+                      className="group flex items-center justify-between border border-slate-50 bg-slate-50/20 hover:bg-slate-50/60 p-3 rounded-2xl transition-all duration-300 shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:shadow-sm"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={`inline-flex items-center justify-center text-[9px] font-extrabold px-2 py-0.75 rounded-lg select-none ${
+                          v.visitType === 'qr_scan' 
+                            ? 'bg-blue-50 text-blue-600 border border-blue-100/50' 
+                            : 'bg-emerald-50 text-emerald-600 border border-emerald-100/50'
+                        }`}>
+                          {v.visitType === 'qr_scan' ? 'QR' : 'PAY'}
+                        </span>
+                        <div className="min-w-0">
+                          <span className="text-[12.5px] font-extrabold text-slate-800 block truncate leading-tight">
+                            {v.customer?.fullName ?? 'Unknown'}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400 mt-0.5 block">
+                            {v.customer?.phone}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1 select-none">
+                        <Clock className="h-3 w-3 text-slate-300" />
+                        <span>{format(new Date(v.visitedAt), 'dd MMM, HH:mm')}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
 
-        {/* Recent Customers */}
-        <div style={{ marginBottom: 28 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <div className="section-title" style={{ margin: 0 }}>Recent Customers</div>
-            <Link href={`/customers?outletId=${outlet.id}`} style={{ fontSize: 12, color: 'var(--color-primary)', textDecoration: 'none' }}>View all →</Link>
+        {/* ── Recent Customers Table Section ── */}
+        <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.03)]">
+          <div className="flex items-center justify-between pb-4 mb-2 select-none">
+            <div>
+              <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">Recent Customers</h3>
+              <p className="text-[10px] font-semibold text-slate-400 mt-0.5">Direct overview of customer directory metrics</p>
+            </div>
+            <Link href={`/customers?outletId=${outlet.id}`} className="inline-flex items-center gap-0.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors no-underline">
+              <span>View all</span>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
           </div>
+
           {recentCustomers.length === 0 ? (
-            <div className="card" style={{ textAlign: 'center', color: 'var(--color-text-3)', padding: 32 }}>No customers yet.</div>
+            <div className="text-center py-12 text-xs font-semibold text-slate-400">
+              No customers listed yet.
+            </div>
           ) : (
-            <div className="data-table-wrap">
-              <table className="data-table">
-                <thead>
+            <div className="overflow-x-auto border border-slate-100/60 rounded-2xl">
+              <table className="min-w-full divide-y divide-slate-100 text-left">
+                <thead className="bg-slate-50/70 select-none">
                   <tr>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Visits</th>
-                    <th>Last Visit</th>
-                    <th>Joined</th>
+                    <th className="px-5 py-3.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Name</th>
+                    <th className="px-5 py-3.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Phone</th>
+                    <th className="px-5 py-3.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Visits</th>
+                    <th className="px-5 py-3.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Last Visit</th>
+                    <th className="px-5 py-3.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Joined</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {recentCustomers.map(c => (
-                    <tr key={c.id}>
-                      <td>
-                        <Link href={`/customers/${c.id}`} style={{ textDecoration: 'none', fontWeight: 600, color: 'var(--color-primary)' }}>
+                    <tr key={c.id} className="hover:bg-slate-50/30 transition-colors">
+                      <td className="px-5 py-3.5">
+                        <Link href={`/customers/${c.id}`} className="text-xs font-extrabold text-[#D64238] hover:text-[#B82E25] no-underline">
                           {c.fullName}
                         </Link>
                       </td>
-                      <td style={{ fontSize: 13 }}>{c.phone}</td>
-                      <td>
-                        <span style={{ display: 'inline-flex', padding: '2px 7px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: 'var(--color-primary-dim)', color: 'var(--color-primary)' }}>
+                      <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{c.phone}</td>
+                      <td className="px-5 py-3.5">
+                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-[#D64238] border border-red-100/35 select-none">
                           {c.totalVisits}
                         </span>
                       </td>
-                      <td style={{ fontSize: 12, color: 'var(--color-text-3)' }}>
+                      <td className="px-5 py-3.5 text-xs font-semibold text-slate-400">
                         {c.lastVisitDate ? format(new Date(c.lastVisitDate), 'dd MMM yy') : '—'}
                       </td>
-                      <td style={{ fontSize: 12, color: 'var(--color-text-3)' }}>
+                      <td className="px-5 py-3.5 text-xs font-semibold text-slate-400">
                         {format(new Date(c.createdAt), 'dd MMM yy')}
                       </td>
                     </tr>
@@ -228,15 +418,26 @@ export default function OutletDetailPage() {
           )}
         </div>
 
-        {/* Recent Reviews */}
+        {/* ── Recent Reviews Section ── */}
         {recentReviews.length > 0 && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <div className="section-title" style={{ margin: 0 }}>Recent Reviews</div>
-              <Link href={`/reviews?outletId=${outlet.id}`} style={{ fontSize: 12, color: 'var(--color-primary)', textDecoration: 'none' }}>View all →</Link>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between select-none">
+              <div>
+                <h3 className="text-sm font-extrabold text-slate-900 tracking-tight">Recent Reviews</h3>
+                <p className="text-[10px] font-semibold text-slate-400 mt-0.5">Customer feedback and star ratings feed</p>
+              </div>
+              <Link href={`/reviews?outletId=${outlet.id}`} className="inline-flex items-center gap-0.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors no-underline">
+                <span>View all</span>
+                <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
-              {recentReviews.map(r => <ReviewCard key={r.id} review={r} />)}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentReviews.map(r => (
+                <div key={r.id} className="transition-all duration-300 hover:-translate-y-0.5">
+                  <ReviewCard review={r} />
+                </div>
+              ))}
             </div>
           </div>
         )}

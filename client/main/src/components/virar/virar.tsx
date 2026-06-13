@@ -69,18 +69,18 @@ export default function VirarPage() {
           >
             <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_25px_rgba(232,140,58,0.4)] transition-opacity duration-300 pointer-events-none" />
             <Avatar className="w-24 h-24 bg-[#1A1A1A]">
-              <AvatarImage src="/images/logo/logo.jpg" alt="StoneOven" className="object-cover" />
-              <AvatarFallback className="text-white text-2xl font-bold bg-[#1A1A1A]">SO</AvatarFallback>
+              <AvatarImage src="/images/logo/logo.jpg" alt="Napkiq" className="object-cover" />
+              <AvatarFallback className="text-white text-2xl font-bold bg-[#1A1A1A]">NQ</AvatarFallback>
             </Avatar>
           </motion.div>
 
           <h1 className="font-extrabold text-2xl mb-1 text-center tracking-[0.5px]">
-            <span className="text-white">STONE</span>
+            <span className="text-white">Nap</span>
             <motion.span
               animate={{ textShadow: ['0 0 4px rgba(232,140,58,0.1)', '0 0 12px rgba(232,140,58,0.4)', '0 0 4px rgba(232,140,58,0.1)'] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               style={{ background: 'linear-gradient(to right, #F2A65A, #E88C3A, #D96A1D)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-            >OVEN</motion.span>
+            >kiq</motion.span>
           </h1>
           <p className="text-white/70 text-[13px] text-center font-medium">Authentic flavours, crafted with love</p>
         </motion.div>

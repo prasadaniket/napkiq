@@ -1,15 +1,15 @@
 {
-  "name": "stoneoven-automation-worker",
+  "name": "napkiq-automation-worker",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev":    "wrangler dev",
+    "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "secret": "wrangler secret put AUTOMATION_SECRET"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",
-    "wrangler": "^3.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "wrangler": "^4.85.0"
   }
 }

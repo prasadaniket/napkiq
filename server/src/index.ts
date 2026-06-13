@@ -13,7 +13,7 @@ const PORT = parseInt(process.env.PORT ?? '8080', 10)
 const app = createApp()
 
 const server = app.listen(PORT, () => {
-  console.log(`StoneOven server running on port ${PORT}`)
+  console.log(`Napkiq server running on port ${PORT}`)
   console.log(`Health: http://localhost:${PORT}/api/health`)
 })
 

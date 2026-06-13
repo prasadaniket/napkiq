@@ -4,9 +4,11 @@ import MenuItemCard from './MenuItemCard'
 interface MenuCategorySectionProps {
   category: MenuCategory
   items: MenuItem[]
+  cart: Record<string, { item: MenuItem; quantity: number }>
+  onUpdateQuantity: (item: MenuItem, change: number) => void
 }
 
-export default function MenuCategorySection({ category, items }: MenuCategorySectionProps) {
+export default function MenuCategorySection({ category, items, cart, onUpdateQuantity }: MenuCategorySectionProps) {
   if (items.length === 0) return null
 
   return (
@@ -17,7 +19,12 @@ export default function MenuCategorySection({ category, items }: MenuCategorySec
       </div>
       <div className="bg-white rounded-xl px-4 shadow-sm">
         {items.map((item) => (
-          <MenuItemCard key={item.id} item={item} />
+          <MenuItemCard
+            key={item.id}
+            item={item}
+            quantity={cart[item.id]?.quantity || 0}
+            onUpdateQuantity={(change) => onUpdateQuantity(item, change)}
+          />
         ))}
       </div>
     </div>

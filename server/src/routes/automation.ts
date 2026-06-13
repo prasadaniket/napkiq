@@ -141,7 +141,7 @@ async function runAutomation() {
         if (!await alreadySent(customer.id, 'birthday_whatsapp', stage)) {
           const ok = await sendWhatsApp({
             to:           phone,
-            templateName: `stoneoven_birthday_${stage}`,
+            templateName: `napkiq_birthday_${stage}`,
             variables:    buildBirthdayWhatsApp(customer.fullName, daysUntil),
           })
           await logSend(customer.id, 'birthday_whatsapp', stage, ok ? 'success' : 'failed')
@@ -174,11 +174,11 @@ async function runAutomation() {
         if (!await alreadySent(customer.id, 'anniversary_whatsapp', stage)) {
           const ok = await sendWhatsApp({
             to:           phone,
-            templateName: `stoneoven_anniversary_${stage}`,
+            templateName: `napkiq_anniversary_${stage}`,
             variables: {
               customer_name: customer.fullName,
               days_until:    daysUntil.toString(),
-              restaurant:    'StoneOven',
+              restaurant:    'Napkiq',
             },
           })
           await logSend(customer.id, 'anniversary_whatsapp', stage, ok ? 'success' : 'failed')
@@ -203,11 +203,11 @@ async function runAutomation() {
         if (!await alreadySent(customer.id, 'reengagement_whatsapp', 'thirty_days_inactive')) {
           const ok = await sendWhatsApp({
             to:           phone,
-            templateName: 'stoneoven_reengagement',
+            templateName: 'napkiq_reengagement',
             variables: {
               customer_name: customer.fullName,
               days_since:    daysSince.toString(),
-              restaurant:    'StoneOven',
+              restaurant:    'Napkiq',
             },
           })
           await logSend(customer.id, 'reengagement_whatsapp', 'thirty_days_inactive', ok ? 'success' : 'failed')
@@ -291,8 +291,8 @@ router.post('/reengagement', async (req, res, next) => {
       if (!await alreadySent(c.id, 'reengagement_whatsapp', 'thirty_days_inactive')) {
         const ok = await sendWhatsApp({
           to:           normalizePone(c.phone),
-          templateName: 'stoneoven_reengagement',
-          variables: { customer_name: c.fullName, days_since: daysSince.toString(), restaurant: 'StoneOven' },
+          templateName: 'napkiq_reengagement',
+          variables: { customer_name: c.fullName, days_since: daysSince.toString(), restaurant: 'Napkiq' },
         })
         await logSend(c.id, 'reengagement_whatsapp', 'thirty_days_inactive', ok ? 'success' : 'failed')
         ok ? sent++ : failed++
@@ -343,8 +343,8 @@ router.post('/welcome', dualAuth, async (_req, res, next) => {
       if (waT?.isActive && !await alreadySent(c.id, 'welcome_whatsapp', 'on_registration')) {
         const ok = await sendWhatsApp({
           to:           phone,
-          templateName: 'stoneoven_welcome',
-          variables:    { customer_name: c.fullName, restaurant: 'StoneOven' },
+          templateName: 'napkiq_welcome',
+          variables:    { customer_name: c.fullName, restaurant: 'Napkiq' },
         })
         await logSend(c.id, 'welcome_whatsapp', 'on_registration', ok ? 'success' : 'failed')
         ok ? sent++ : failed++
@@ -352,7 +352,7 @@ router.post('/welcome', dualAuth, async (_req, res, next) => {
 
       if (emT?.isActive && c.email && !await alreadySent(c.id, 'welcome_email', 'on_registration')) {
         const { subject, html } = buildGenericEmail({
-          subject:  emT.subject ?? 'Welcome to StoneOven!',
+          subject:  emT.subject ?? 'Welcome to Napkiq!',
           body:     emT.body,
           name:     c.fullName,
           imageUrl: emT.imageUrl,
@@ -388,8 +388,8 @@ router.post('/promotional', dualAuth, async (_req, res, next) => {
       if (waT?.isActive) {
         const ok = await sendWhatsApp({
           to:           normalizePone(c.phone),
-          templateName: 'stoneoven_promotional',
-          variables:    { customer_name: c.fullName, restaurant: 'StoneOven' },
+          templateName: 'napkiq_promotional',
+          variables:    { customer_name: c.fullName, restaurant: 'Napkiq' },
         })
         await logSend(c.id, 'promotional_whatsapp', 'manual_campaign', ok ? 'success' : 'failed')
         ok ? sent++ : failed++
@@ -397,7 +397,7 @@ router.post('/promotional', dualAuth, async (_req, res, next) => {
 
       if (emT?.isActive && c.email) {
         const { subject, html } = buildGenericEmail({
-          subject:  emT.subject ?? 'Special offer at StoneOven!',
+          subject:  emT.subject ?? 'Special offer at Napkiq!',
           body:     emT.body,
           name:     c.fullName,
           imageUrl: emT.imageUrl,
@@ -433,8 +433,8 @@ router.post('/announcement', dualAuth, async (_req, res, next) => {
       if (waT?.isActive) {
         const ok = await sendWhatsApp({
           to:           normalizePone(c.phone),
-          templateName: 'stoneoven_announcement',
-          variables:    { customer_name: c.fullName, restaurant: 'StoneOven' },
+          templateName: 'napkiq_announcement',
+          variables:    { customer_name: c.fullName, restaurant: 'Napkiq' },
         })
         await logSend(c.id, 'announcement_whatsapp', 'manual_campaign', ok ? 'success' : 'failed')
         ok ? sent++ : failed++
@@ -442,7 +442,7 @@ router.post('/announcement', dualAuth, async (_req, res, next) => {
 
       if (emT?.isActive && c.email) {
         const { subject, html } = buildGenericEmail({
-          subject:  emT.subject ?? 'Something new at StoneOven!',
+          subject:  emT.subject ?? 'Something new at Napkiq!',
           body:     emT.body,
           name:     c.fullName,
           imageUrl: emT.imageUrl,

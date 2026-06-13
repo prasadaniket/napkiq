@@ -17,7 +17,7 @@ router.get('/', async (req, res, next) => {
     const outletId = req.query.outletId as string | undefined
 
     const categories = await prisma.menuCategory.findMany({
-      where: outletId ? { outletId } : {},
+      where: outletId ? { outletId, isActive: true } : { isActive: true },
       orderBy: { displayOrder: 'asc' },
       include: {
         outlet: { select: { id: true, name: true, code: true } },

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(xargs cat *)",
+      "Bash(npx wrangler *)",
+      "Bash(curl -s -X POST https://so-ta1t.onrender.com/api/automation/welcome -H 'Content-Type: application/json' -H 'x-automation-secret: change-me-before-deploy' -H 'x-wasender-api-key: 29d8ec3fd065e1281f26bc26ca369f36c58d81b277aba1a45cd6a4445056d9ab' --max-time 30)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

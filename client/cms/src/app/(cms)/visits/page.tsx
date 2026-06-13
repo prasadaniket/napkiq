@@ -7,6 +7,7 @@ import { api } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
 import { format } from 'date-fns'
 import type { PageResponse, Visit, VisitSummary } from '@/types/api'
+import toast from 'react-hot-toast'
 
 function useDebounce<T>(value: T, delay: number): T {
   const [dv, setDv] = useState(value)
@@ -89,9 +90,24 @@ function SummaryCard({ summary }: { summary: VisitSummary }) {
       </div>
 
       {/* Payment row */}
-      <div>
+      <div 
+        title="Table order payment integration is coming in a future update!"
+        style={{ opacity: 0.65, cursor: 'help' }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <span style={{ fontSize: 12, color: 'var(--color-success)', fontWeight: 600 }}>Payment</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 12, color: 'var(--color-success)', fontWeight: 600 }}>Payment</span>
+            <span style={{
+              fontSize: 8.5,
+              fontWeight: 800,
+              color: 'var(--color-primary)',
+              background: 'var(--color-primary-dim)',
+              padding: '1px 5px',
+              borderRadius: 4,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}>Soon</span>
+          </div>
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-1)' }}>
             {summary.payments.toLocaleString()}
             <span style={{ fontSize: 10, color: 'var(--color-text-3)', fontWeight: 400, marginLeft: 4 }}>{payPct}%</span>
@@ -194,15 +210,17 @@ export default function VisitsPage() {
             </div>
             {/* Export — admin only (backend enforces requireAdmin) */}
             {isAdmin && (
-              <a href={`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api'}/cms/export/visits`}
-                target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                <button className="btn-ghost" style={{ gap: 6, fontSize: 13 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  Export CSV
-                </button>
-              </a>
+              <button 
+                onClick={() => toast.success('🚀 CSV Export is coming soon in the next update!')}
+                className="btn-ghost" 
+                style={{ gap: 6, fontSize: 13, border: '1px solid var(--color-border)', cursor: 'pointer' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Export CSV</span>
+                <span className="text-[9px] font-extrabold bg-[#D64238]/10 text-[#D64238] px-1.5 py-0.5 rounded-md uppercase tracking-wider select-none">Soon</span>
+              </button>
             )}
           </div>
         </div>
@@ -219,7 +237,7 @@ export default function VisitsPage() {
               value={type} onChange={e => setType(e.target.value)}>
               <option value="">All Types</option>
               <option value="qr_scan">QR Scan</option>
-              <option value="payment">Payment</option>
+              <option value="payment" disabled style={{ color: 'var(--color-text-3)', opacity: 0.5 }}>Payment (Soon)</option>
             </select>
 
             <DateInput value={dateFrom} onChange={setDateFrom} placeholder="Select Date From" />
@@ -318,15 +336,27 @@ export default function VisitsPage() {
                         <span style={{
                           display: 'inline-flex', alignItems: 'center', gap: 5,
                           padding: '3px 9px', borderRadius: 99, fontSize: 11, fontWeight: 600,
-                          background: v.converted ? 'rgba(34,197,94,0.12)' : 'rgba(255,255,255,0.05)',
-                          color: v.converted ? 'var(--color-success)' : 'var(--color-text-3)',
+                          background: !v.converted
+                            ? 'rgba(255,255,255,0.05)'
+                            : v.isRepeatVisitor
+                              ? 'rgba(245,158,11,0.12)'
+                              : 'rgba(34,197,94,0.12)',
+                          color: !v.converted
+                            ? 'var(--color-text-3)'
+                            : v.isRepeatVisitor
+                              ? '#f59e0b'
+                              : 'var(--color-success)',
                         }}>
                           <span style={{
                             width: 6, height: 6, borderRadius: '50%',
-                            background: v.converted ? 'var(--color-success)' : 'rgba(255,255,255,0.2)',
+                            background: !v.converted
+                              ? 'rgba(255,255,255,0.2)'
+                              : v.isRepeatVisitor
+                                ? '#f59e0b'
+                                : 'var(--color-success)',
                             flexShrink: 0,
                           }} />
-                          {v.converted ? 'Converted' : 'Not Converted'}
+                          {!v.converted ? 'Not Converted' : v.isRepeatVisitor ? 'Old Customer' : 'Converted'}
                         </span>
                       </td>
                       {isOwnerOrAbove && (

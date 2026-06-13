@@ -55,6 +55,19 @@ const Icon = {
       <path d="M3 6h18M3 12h18M3 18h18"/>
     </svg>
   ),
+  Birthday: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+      <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
+      <path d="M2 21h20"/>
+      <path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/>
+    </svg>
+  ),
+  Anniversary: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  ),
   Logout: () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -66,28 +79,34 @@ const Icon = {
 // ─── Nav config per role ───────────────────────────────────────────────────────
 
 const adminNav: NavItem[] = [
-  { href: '/dashboard',  label: 'Dashboard',  icon: <Icon.Dashboard /> },
-  { href: '/outlets',    label: 'Outlets',    icon: <Icon.Outlets /> },
-  { href: '/customers',  label: 'Customers',  icon: <Icon.Customers /> },
-  { href: '/reviews',    label: 'Reviews',    icon: <Icon.Reviews /> },
-  { href: '/visits',     label: 'Visits',     icon: <Icon.Visits /> },
-  { href: '/menu',       label: 'Menu',       icon: <Icon.Menu /> },
-  { href: '/automation', label: 'Automation', icon: <Icon.Automation /> },
+  { href: '/dashboard',    label: 'Dashboard',    icon: <Icon.Dashboard /> },
+  { href: '/outlets',      label: 'Outlets',      icon: <Icon.Outlets /> },
+  { href: '/customers',    label: 'Customers',    icon: <Icon.Customers /> },
+  { href: '/reviews',      label: 'Reviews',      icon: <Icon.Reviews /> },
+  { href: '/visits',       label: 'Visits',       icon: <Icon.Visits /> },
+  { href: '/birthdays',    label: 'Birthdays',    icon: <Icon.Birthday /> },
+  { href: '/anniversaries',label: 'Anniversaries',icon: <Icon.Anniversary /> },
+  { href: '/menu',         label: 'Menu',         icon: <Icon.Menu /> },
+  { href: '/automation',   label: 'Automation',   icon: <Icon.Automation /> },
 ]
 
 const ownerNav: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: <Icon.Dashboard /> },
-  { href: '/outlets',   label: 'Outlets',   icon: <Icon.Outlets /> },
-  { href: '/customers', label: 'Customers', icon: <Icon.Customers /> },
-  { href: '/reviews',   label: 'Reviews',   icon: <Icon.Reviews /> },
-  { href: '/visits',    label: 'Visits',    icon: <Icon.Visits /> },
+  { href: '/dashboard',    label: 'Dashboard',    icon: <Icon.Dashboard /> },
+  { href: '/outlets',      label: 'Outlets',      icon: <Icon.Outlets /> },
+  { href: '/customers',    label: 'Customers',    icon: <Icon.Customers /> },
+  { href: '/reviews',      label: 'Reviews',      icon: <Icon.Reviews /> },
+  { href: '/visits',       label: 'Visits',       icon: <Icon.Visits /> },
+  { href: '/birthdays',    label: 'Birthdays',    icon: <Icon.Birthday /> },
+  { href: '/anniversaries',label: 'Anniversaries',icon: <Icon.Anniversary /> },
 ]
 
 const franchiseNav: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: <Icon.Dashboard /> },
-  { href: '/customers', label: 'Customers', icon: <Icon.Customers /> },
-  { href: '/reviews',   label: 'Reviews',   icon: <Icon.Reviews /> },
-  { href: '/visits',    label: 'Visits',    icon: <Icon.Visits /> },
+  { href: '/dashboard',    label: 'Dashboard',    icon: <Icon.Dashboard /> },
+  { href: '/customers',    label: 'Customers',    icon: <Icon.Customers /> },
+  { href: '/reviews',      label: 'Reviews',      icon: <Icon.Reviews /> },
+  { href: '/visits',       label: 'Visits',       icon: <Icon.Visits /> },
+  { href: '/birthdays',    label: 'Birthdays',    icon: <Icon.Birthday /> },
+  { href: '/anniversaries',label: 'Anniversaries',icon: <Icon.Anniversary /> },
 ]
 
 // ─── Role label ────────────────────────────────────────────────────────────────
@@ -123,9 +142,9 @@ export default function CMSSidebar() {
         <div className="sidebar-logo">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo/logo.png"
-            alt="StoneOven"
-            style={{ width: 120, height: 'auto', objectFit: 'contain', mixBlendMode: 'screen' }}
+            src="/logo/logo-circle.png"
+            alt="Napkiq"
+            style={{ width: 80, height: 80, objectFit: 'contain', borderRadius: '50%' }}
           />
         </div>
 
@@ -134,15 +153,15 @@ export default function CMSSidebar() {
           {/* Outlet badge for franchise owners */}
           {outletName && (
             <div style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'rgba(0,2,29,0.03)',
+              border: '1px solid rgba(0,2,29,0.06)',
               borderRadius: '8px',
               padding: '8px 10px',
               marginBottom: '8px',
               fontSize: '11.5px',
-              color: 'rgba(255,255,255,0.5)',
+              color: 'rgba(0,2,29,0.6)',
             }}>
-              <span style={{ color: 'rgba(255,255,255,0.25)', marginRight: '5px' }}>📍</span>
+              <span style={{ color: 'rgba(0,2,29,0.3)', marginRight: '5px' }}>📍</span>
               {outletName}
             </div>
           )}
@@ -162,8 +181,8 @@ export default function CMSSidebar() {
                 {(item.label === 'Automation' || item.label === 'Menu') && (
                   <span style={{
                     marginLeft: 'auto',
-                    background: 'rgba(242,101,34,0.2)',
-                    color: '#F26522',
+                    background: 'rgba(214,66,56,0.15)',
+                    color: '#D64238',
                     fontSize: '9px',
                     fontWeight: 700,
                     padding: '1px 5px',
@@ -181,11 +200,11 @@ export default function CMSSidebar() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
             <div style={{
               width: 30, height: 30,
-              background: 'rgba(242,101,34,0.15)',
-              border: '1px solid rgba(242,101,34,0.25)',
+              background: 'rgba(214,66,56,0.1)',
+              border: '1px solid rgba(214,66,56,0.2)',
               borderRadius: '50%',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '12px', fontWeight: 700, color: '#F26522',
+              fontSize: '12px', fontWeight: 700, color: '#D64238',
               flexShrink: 0,
             }}>
               {user?.fullName?.charAt(0) ?? '?'}
@@ -195,7 +214,7 @@ export default function CMSSidebar() {
                 {user?.fullName ?? '—'}
               </div>
               <div className="sidebar-user-role">
-                {user?.username && <span style={{ color: 'rgba(255,255,255,0.25)', marginRight: '4px' }}>@{user.username}</span>}
+                {user?.username && <span style={{ color: 'rgba(0,2,29,0.3)', marginRight: '4px' }}>@{user.username}</span>}
               </div>
             </div>
           </div>

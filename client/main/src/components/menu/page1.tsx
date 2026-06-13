@@ -36,7 +36,7 @@ export default function VirarMenuPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-secondary mb-1">Stone Oven Virar</h1>
+        <h1 className="text-2xl font-bold text-secondary mb-1">Napkiq Virar</h1>
         <p className="text-sm text-secondary-light">Menu</p>
       </div>
 

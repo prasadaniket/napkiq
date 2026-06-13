@@ -1,8 +1,8 @@
 /**
- * StoneOven Automation Worker
+ * Napkiq Automation Worker
  *
  * Runs daily at 03:00 UTC (08:30 IST) via Cloudflare Cron Trigger.
- * Calls the StoneOven API server which handles the DB logic, WhatsApp,
+ * Calls the Napkiq API server which handles the DB logic, WhatsApp,
  * and email sending. The worker is purely a scheduler + HTTP client.
  *
  * Setup:
@@ -10,7 +10,7 @@
  *   2. wrangler deploy
  *
  * Manual trigger (dev):
- *   POST https://stoneoven-automation.unicord26.workers.dev/trigger
+ *   POST https://napkiq-automation.unicord26.workers.dev/trigger
  *   Header: x-trigger-key: <your trigger key>
  */
 
@@ -36,7 +36,7 @@ export default {
     if (url.pathname === '/') {
       return new Response(
         JSON.stringify({
-          service: 'StoneOven Automation Worker',
+          service: 'Napkiq Automation Worker',
           status:  'ok',
           cron:    '0 3 * * * (03:00 UTC = 08:30 IST)',
           server:  env.SERVER_URL,

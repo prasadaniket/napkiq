@@ -1,4 +1,4 @@
-export type Gender = 'Male' | 'Female' | 'Transgender' | 'RatherNotSay'
+export type Gender = 'Male' | 'Female' | 'RatherNotSay'
 export type MaritalStatus = 'Married' | 'Unmarried'
 
 export interface Customer {

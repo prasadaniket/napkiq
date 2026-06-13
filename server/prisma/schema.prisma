@@ -42,6 +42,8 @@ enum AutomationType {
   promotional_email
   announcement_whatsapp
   announcement_email
+  bounceback_whatsapp
+  bounceback_email
 }
 
 enum MessageStage {

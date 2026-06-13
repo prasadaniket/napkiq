@@ -136,14 +136,15 @@ export interface ReviewSummary {
 // ─── Visits ───────────────────────────────────────────────────────────────────
 
 export interface Visit {
-  id:          string
-  visitType:   'qr_scan' | 'payment'
-  visitedAt:   string
-  customerId:  string | null
-  outletId:    string
-  converted:   boolean
-  customer?:   { fullName: string; phone: string } | null
-  outlet?:     { name: string; code: string }
+  id:               string
+  visitType:        'qr_scan' | 'payment'
+  visitedAt:        string
+  customerId:       string | null
+  outletId:         string
+  converted:        boolean
+  isRepeatVisitor:  boolean
+  customer?:        { fullName: string; phone: string } | null
+  outlet?:          { name: string; code: string }
 }
 
 export interface VisitSummary {

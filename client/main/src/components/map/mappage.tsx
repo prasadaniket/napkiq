@@ -11,7 +11,7 @@ export interface OutletMapInfo {
 export const outletMaps: OutletMapInfo[] = [
   {
     id: 'boisar',
-    name: 'Stone Oven Boisar',
+    name: 'Napkiq Boisar',
     address: 'Boisar',
     area: 'Boisar',
     city: 'Palghar',
@@ -20,7 +20,7 @@ export const outletMaps: OutletMapInfo[] = [
   },
   {
     id: 'palghar',
-    name: 'Stone Oven Palghar',
+    name: 'Napkiq Palghar',
     address: 'Palghar',
     area: 'Palghar',
     city: 'Palghar',
@@ -29,7 +29,7 @@ export const outletMaps: OutletMapInfo[] = [
   },
   {
     id: 'virar',
-    name: 'Stone Oven Virar',
+    name: 'Napkiq Virar',
     address: 'Virar',
     area: 'Virar West',
     city: 'Vasai-Virar',
@@ -38,7 +38,7 @@ export const outletMaps: OutletMapInfo[] = [
   },
   {
     id: 'vasai',
-    name: 'Stone Oven Vasai',
+    name: 'Napkiq Vasai',
     address: 'Vasai',
     area: 'Vasai West',
     city: 'Vasai-Virar',
@@ -55,7 +55,7 @@ export default function MapPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold text-secondary mb-1">Our Locations</h1>
-      <p className="text-sm text-secondary-light mb-6">Find a Stone Oven near you</p>
+      <p className="text-sm text-secondary-light mb-6">Find a Napkiq near you</p>
 
       <div className="space-y-4">
         {outletMaps.map((outlet) => (

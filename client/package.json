@@ -1,8 +1,8 @@
 {
-  "name": "stoneoven-monorepo",
+  "name": "napkiq-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "StoneOven Restaurant - Main App + CMS Monorepo",
+  "description": "Napkiq Restaurant - Main App + CMS Monorepo",
   "workspaces": [
     "main",
     "cms"

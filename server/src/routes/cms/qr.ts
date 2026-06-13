@@ -52,7 +52,7 @@ router.get('/:outletCode', async (req, res, next) => {
     }
     if (format === 'png') {
       res.setHeader('Content-Type', 'image/png')
-      res.setHeader('Content-Disposition', `attachment; filename=stoneoven-qr-${outlet.code}.png`)
+      res.setHeader('Content-Disposition', `attachment; filename=napkiq-qr-${outlet.code}.png`)
       return res.send(qr)
     }
     res.json({

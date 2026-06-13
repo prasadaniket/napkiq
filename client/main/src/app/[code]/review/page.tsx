@@ -8,7 +8,10 @@ import { useDeviceFingerprint } from '@/hooks/useDeviceFingerprint'
 import { useCustomer } from '@/hooks/useCustomer'
 import { useOutlet } from '@/hooks/useOutlet'
 import ReviewForm from '@/components/form2/review'
+import FeedbackForm from '@/components/form1/feedback'
 import Loader from '@/components/ui/Loader'
+
+const gradientStyle = { background: 'linear-gradient(135deg, #E85D52 0%, #D64238 50%, #A62B22 100%)' }
 
 export default function ReviewPage() {
   const params = useParams()
@@ -21,24 +24,24 @@ export default function ReviewPage() {
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    if (!customerLoading && !customer?.hasSubmittedFirstReview) {
-      router.replace(`/${code}/feedback`)
+    if (outlet) {
+      document.title = `Review — ${outlet.name} | Napkiq`
     }
-  }, [customer, customerLoading, code, router])
+  }, [outlet])
 
   const loading = fpLoading || outletLoading || customerLoading
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#1A1A1A] to-[#000000]">
+    <div className="min-h-screen flex items-center justify-center" style={gradientStyle}>
       <Loader />
     </div>
   )
 
   if (!outlet) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#1A1A1A] to-[#000000] flex-col gap-4">
-        <p className="text-white/50 text-lg">Unable to load outlet data.</p>
-        <Link href={`/${code}`} className="text-[#E88C3A] underline underline-offset-4">Go Back</Link>
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4" style={gradientStyle}>
+        <p className="text-white/70 text-lg">Unable to load outlet data.</p>
+        <Link href={`/${code}`} className="text-white underline underline-offset-4 font-medium">Go Back</Link>
       </div>
     )
   }
@@ -51,52 +54,58 @@ export default function ReviewPage() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center pt-8 px-4 bg-gradient-to-b from-[#1A1A1A] to-[#000000] overflow-x-hidden">
+    <div
+      id="review-page"
+      className="relative min-h-screen flex flex-col items-center pt-8 px-4 overflow-x-hidden"
+      style={gradientStyle}
+    >
+      {/* Ambient glow */}
       <motion.div
-        className="fixed top-[-5%] left-1/2 w-[350px] h-[350px] bg-[#E88C3A] opacity-10 blur-[130px] rounded-full pointer-events-none"
-        style={{ x: '-50%' }}
-        animate={{
-           scale: [1, 1.05, 1],
-           x: ['-50%', '-48%', '-52%', '-50%'],
-           y: [0, 15, -10, 0]
-        }}
+        className="fixed top-[-5%] left-1/2 w-[350px] h-[350px] rounded-full pointer-events-none"
+        style={{ x: '-50%', background: 'radial-gradient(circle, rgba(255,255,255,0.14) 0%, transparent 70%)' }}
+        animate={{ scale: [1, 1.05, 1], x: ['-50%', '-48%', '-52%', '-50%'], y: [0, 15, -10, 0] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      <main className="relative z-10 w-full max-w-md mx-auto flex flex-col">
+      <main id="review-main" className="relative z-10 w-full max-w-md mx-auto flex flex-col">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="flex items-center gap-3 mb-6"
         >
-          <Link href={`/${code}`}>
+          <Link href={`/${code}`} id="review-back-btn" aria-label="Go back to outlet page">
             <motion.div
               whileHover={{ scale: 1.05, x: -3 }}
               whileTap={{ scale: 0.95 }}
-              className="text-[#E88C3A] hover:text-[#F2A65A] transition-colors p-2 -ml-2 rounded-full cursor-pointer"
+              className="text-white/80 hover:text-white transition-colors p-2 -ml-2 rounded-full cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m15 18-6-6 6-6"/>
               </svg>
             </motion.div>
           </Link>
-          <h1 className="text-2xl font-extrabold text-white tracking-[0.5px]">Review</h1>
+          <h1 className="text-2xl font-serif font-extrabold text-white tracking-[0.5px]" style={{ textShadow: '0 2px 8px rgba(0,2,29,0.15)' }}>
+            Review
+          </h1>
         </motion.div>
 
         <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
           {success ? (
-            <div className="bg-[#111111] rounded-[28px] border border-white/5 p-8 text-center shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
-              <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
-              <p className="text-white/60 mb-6 font-medium">Your review has been successfully submitted.</p>
+            <div className="rounded-[28px] p-8 text-center" style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.4)', boxShadow: '0 16px 40px rgba(0,2,29,0.12)' }}>
+              <h3 className="text-2xl font-serif font-bold text-secondary mb-2">Thank You!</h3>
+              <p className="text-secondary/60 mb-6 font-medium">Your review has been successfully submitted.</p>
               <Loader />
             </div>
-          ) : (
+          ) : customer?.hasSubmittedFirstReview ? (
             <ReviewForm customer={customer} outlet={outlet} onSuccess={handleSuccess} />
+          ) : (
+            <FeedbackForm outlet={outlet} deviceId={deviceId!} onSuccess={handleSuccess} />
           )}
         </motion.div>
       </main>
@@ -108,20 +117,20 @@ export default function ReviewPage() {
           transition={{ delay: 0.6, duration: 0.5 }}
           className="mt-auto relative z-10 w-full flex flex-col items-center gap-4 pb-8 pt-8"
         >
-          <p className="text-[11px] text-white/30 tracking-[0.2em] font-medium uppercase">Connect With Us</p>
+          <p className="text-[11px] text-white/40 tracking-[0.2em] font-medium uppercase">Connect With Us</p>
           <div className="flex items-center gap-5">
             {outlet.instagramUrl && (
-              <a href={outlet.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-white/60 transition-colors">
+              <a href={outlet.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/40 hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </a>
             )}
             {outlet.facebookUrl && (
-              <a href={outlet.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-white/30 hover:text-white/60 transition-colors">
+              <a href={outlet.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/40 hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
             )}
           </div>
-          <p className="text-[10px] text-white/20 tracking-wide font-medium">© 2026 UniCord. All rights reserved.</p>
+          <p className="text-[10px] text-white/25 tracking-wide font-medium">© 2026 UniCord. All rights reserved.</p>
         </motion.div>
       )}
 
@@ -130,7 +139,7 @@ export default function ReviewPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="mt-auto relative z-10 w-full text-center pb-8 pt-8 text-white/30 text-[11px] tracking-wide font-medium"
+          className="mt-auto relative z-10 w-full text-center pb-8 pt-8 text-[10px] text-white/25 tracking-wide font-medium"
         >
           © 2026 UniCord. All rights reserved.
         </motion.div>

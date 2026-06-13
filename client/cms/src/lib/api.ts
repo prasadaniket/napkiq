@@ -19,9 +19,16 @@ api.interceptors.request.use((config) => {
 let isRefreshing = false
 let refreshQueue: Array<(token: string) => void> = []
 
+import { replaceStoneOven } from '@/utils/normalize'
+
 // On 401 — try to refresh token once, then redirect to login
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data) {
+      response.data = replaceStoneOven(response.data)
+    }
+    return response
+  },
   async (error) => {
     const originalRequest = error.config
 

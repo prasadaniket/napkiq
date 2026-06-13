@@ -11,7 +11,7 @@ export type QRFormat = 'svg' | 'dataURL' | 'png'
  */
 class QRService {
   private get baseUrl(): string {
-    return process.env.NEXT_PUBLIC_APP_URL ?? 'https://stoneoven.in'
+    return process.env.NEXT_PUBLIC_APP_URL ?? 'https://napkiq.in'
   }
 
   async generateForOutlet(outletCode: string, format: QRFormat = 'svg'): Promise<string | Buffer> {

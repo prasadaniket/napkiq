@@ -285,7 +285,9 @@ exports.AutomationType = exports.$Enums.AutomationType = {
   promotional_whatsapp: 'promotional_whatsapp',
   promotional_email: 'promotional_email',
   announcement_whatsapp: 'announcement_whatsapp',
-  announcement_email: 'announcement_email'
+  announcement_email: 'announcement_email',
+  bounceback_whatsapp: 'bounceback_whatsapp',
+  bounceback_email: 'bounceback_email'
 };
 
 exports.MessageStage = exports.$Enums.MessageStage = {

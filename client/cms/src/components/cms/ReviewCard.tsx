@@ -73,7 +73,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           {review.sentimentKeywords.map((kw, i) => (
             <span key={i} style={{
               fontSize: 10, padding: '1px 7px', borderRadius: 99,
-              background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-3)',
+              background: 'rgba(0, 2, 29, 0.04)', color: 'var(--color-text-3)',
             }}>
               {kw}
             </span>
@@ -86,7 +86,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         <span style={{
           display: 'inline-flex', padding: '2px 8px', borderRadius: 99,
           fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em',
-          background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-3)',
+          background: 'rgba(0, 2, 29, 0.04)', color: 'var(--color-text-3)',
         }}>
           {review.reviewType === 'first_visit' ? 'First Visit' : 'Repeat Visit'}
         </span>

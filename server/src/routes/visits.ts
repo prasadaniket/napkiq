@@ -30,12 +30,24 @@ router.post('/', async (req, res, next) => {
       return
     }
 
-    const visit = await prisma.customerVisit.create({ data: body })
+    // Resolve customerId from deviceId if not explicitly provided
+    let resolvedCustomerId = body.customerId ?? null
+    if (!resolvedCustomerId && body.deviceId) {
+      const byDevice = await prisma.customer.findUnique({
+        where: { deviceId: body.deviceId },
+        select: { id: true },
+      })
+      resolvedCustomerId = byDevice?.id ?? null
+    }
+
+    const visit = await prisma.customerVisit.create({
+      data: { ...body, customerId: resolvedCustomerId },
+    })
 
     // Update customer's lastVisitDate and totalVisits
-    if (body.customerId) {
+    if (resolvedCustomerId) {
       await prisma.customer.update({
-        where: { id: body.customerId },
+        where: { id: resolvedCustomerId },
         data: {
           lastVisitDate: new Date(),
           totalVisits: { increment: 1 },

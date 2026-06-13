@@ -13,7 +13,7 @@ const CreateCustomerSchema = z.object({
   email: z.string().email().nullable().optional(),
   birthDate: z.string(),
   anniversaryDate: z.string().nullable().optional(),
-  gender: z.enum(['Male', 'Female', 'Transgender', 'RatherNotSay']),
+  gender: z.enum(['Male', 'Female', 'RatherNotSay']),
   maritalStatus: z.enum(['Married', 'Unmarried']),
   firstVisitOutletId: z.string().uuid().nullable().optional(),
 })
@@ -103,7 +103,10 @@ router.post('/', async (req, res, next) => {
       }
 
       // Fire welcome WhatsApp on first registration — async, doesn't block response
-      if (isNew) void sendWelcomeWhatsApp(customer.id, customer.fullName, customer.phone)
+      if (isNew) {
+        void sendWelcomeWhatsApp(customer.id, customer.fullName, customer.phone)
+        void scheduleBounceBackCampaign(customer.id, customer.fullName, customer.phone, body.firstVisitOutletId)
+      }
 
       res.status(201).json(customer)
     } catch (prismaErr: any) {
@@ -153,8 +156,8 @@ async function sendWelcomeWhatsApp(customerId: string, fullName: string, phone: 
 
     const ok = await sendWhatsApp({
       to,
-      templateName: 'stoneoven_welcome',
-      variables:    { customer_name: fullName, restaurant: 'StoneOven' },
+      templateName: 'napkiq_welcome',
+      variables:    { customer_name: fullName, restaurant: 'Napkiq' },
     })
 
     await prisma.automationLog.create({
@@ -171,6 +174,73 @@ async function sendWelcomeWhatsApp(customerId: string, fullName: string, phone: 
   } catch (err) {
     console.error('[REGISTRATION] Welcome WhatsApp error:', err)
   }
+}
+
+async function scheduleBounceBackCampaign(customerId: string, fullName: string, phone: string, outletId: string | null | undefined) {
+  if (!outletId) return
+
+  // Delay 2 hours in production, but 10 seconds in development for easy real-time testing
+  const delayMs = process.env.NODE_ENV === 'production' ? 2 * 60 * 60 * 1000 : 10 * 1000
+
+  console.log(`[BOUNCE-BACK] Scheduled bounce-back campaign for customer ${fullName} in ${delayMs / 1000}s`)
+
+  setTimeout(async () => {
+    try {
+      // Check if they've already received it to prevent duplicate runs
+      const already = await prisma.automationLog.findFirst({
+        where: {
+          customerId,
+          automationType: 'bounceback_whatsapp' as any,
+        }
+      })
+      if (already) {
+        console.log(`[BOUNCE-BACK] Skip sending to ${fullName} - already sent.`)
+        return
+      }
+
+      // Fetch the template and outlet details
+      const tmpl = getTemplate('bounceback_whatsapp')
+      if (!tmpl || !tmpl.isActive) {
+        console.log(`[BOUNCE-BACK] Skip sending - template bounceback_whatsapp is inactive or missing.`)
+        return
+      }
+
+      const outlet = await prisma.outlet.findUnique({ where: { id: outletId } })
+      if (!outlet) {
+        console.log(`[BOUNCE-BACK] Skip sending - outlet ${outletId} not found.`)
+        return
+      }
+
+      const digits = phone.replace(/\D/g, '')
+      const to     = digits.startsWith('91') ? `+${digits}` : `+91${digits}`
+
+      console.log(`[BOUNCE-BACK] Triggering WhatsApp message to ${to}`)
+      
+      const ok = await sendWhatsApp({
+        to,
+        templateName: 'napkiq_bounceback',
+        variables: {
+          customer_name: fullName,
+          outlet_name:   outlet.name,
+          outlet_code:   outlet.code.toUpperCase()
+        }
+      })
+
+      await prisma.automationLog.create({
+        data: {
+          customerId,
+          automationType: 'bounceback_whatsapp' as any,
+          messageStage:   'on_day' as any,
+          status:          ok ? 'success' : 'failed',
+          errorMessage:    null,
+        }
+      })
+
+      console.log(`[BOUNCE-BACK] WhatsApp message ${ok ? 'sent' : 'failed'} to ${to}`)
+    } catch (err) {
+      console.error('[BOUNCE-BACK] Error sending bounce-back campaign:', err)
+    }
+  }, delayMs)
 }
 
 export default router

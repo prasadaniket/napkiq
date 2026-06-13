@@ -12,7 +12,7 @@ export default function Loader({ className, size = 'md', fullScreen = false }: L
   const spinner = (
     <div
       className={cn(
-        'animate-spin rounded-full border-2 border-neutral-light border-t-[#E88C3A]',
+        'animate-spin rounded-full border-2 border-white/30 border-t-[#00021D]',
         sizeMap[size],
         className
       )}

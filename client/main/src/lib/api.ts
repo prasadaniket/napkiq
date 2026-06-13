@@ -19,9 +19,16 @@ realApi.interceptors.request.use((config) => {
   return config
 })
 
+import { replaceStoneOven } from '../utils/normalize'
+
 // Redirect to login on 401
 realApi.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data) {
+      response.data = replaceStoneOven(response.data)
+    }
+    return response
+  },
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const isCmsRoute = window.location.pathname.startsWith('/cms')

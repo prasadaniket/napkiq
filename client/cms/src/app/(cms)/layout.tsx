@@ -28,8 +28,8 @@ function CmsShell({ children }: { children: React.ReactNode }) {
       }}>
         <div style={{
           width: 24, height: 24,
-          border: '2px solid rgba(255,255,255,0.1)',
-          borderTop: '2px solid #F26522',
+          border: '2px solid rgba(0, 2, 29, 0.08)',
+          borderTop: '2px solid var(--color-primary)',
           borderRadius: '50%',
           animation: 'spin 0.7s linear infinite',
         }} />

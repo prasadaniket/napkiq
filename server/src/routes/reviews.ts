@@ -38,6 +38,31 @@ router.post('/', async (req, res, next) => {
       })
     }
 
+    // For repeat reviews: create a linked visit row + increment totalVisits
+    // so the visit history and counter stay in sync
+    if (body.customerId && body.reviewType === 'repeat') {
+      // Fetch deviceId so the visit row is consistent with QR-scan rows
+      const cust = await prisma.customer.findUnique({
+        where: { id: body.customerId },
+        select: { deviceId: true },
+      })
+      await prisma.customerVisit.create({
+        data: {
+          customerId: body.customerId,
+          deviceId:   cust?.deviceId ?? body.customerId, // fallback to id if no deviceId
+          outletId:   body.outletId,
+          visitType:  'qr_scan',
+        },
+      })
+      await prisma.customer.update({
+        where: { id: body.customerId },
+        data: {
+          lastVisitDate: new Date(),
+          totalVisits:   { increment: 1 },
+        },
+      })
+    }
+
     res.status(201).json(review)
   } catch (err) {
     next(err)

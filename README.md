@@ -83,35 +83,6 @@ Napkiq/
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Environment Setup
-Configure your environment configuration files by creating local `.env` files based on the `.env.example` templates provided in `/server` and `/client/cms`.
-
----
-
-### 2. Backend Initialization
-```bash
-cd server
-npm install
-npx prisma generate
-npx prisma db push
-npm run dev
-```
-
----
-
-### 3. Frontend Initialization
-```bash
-cd client
-npm install
-npm run dev
-```
-- **Customer Facing Menu**: `http://localhost:3000`
-- **Internal CMS Portal**: `http://localhost:3001`
-
----
-
 ## 🛡️ Architecture & License
 
 *Napkiq is powered by UniCord Tech.* All rights reserved.

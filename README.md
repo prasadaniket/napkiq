@@ -83,6 +83,8 @@ Napkiq/
 
 ---
 
-## 🛡️ Architecture & License
+## 🛡️ License & Copyright
 
-*Napkiq is powered by UniCord Tech.* All rights reserved.
+Copyright © 2026 **Napkiq** & **UniCord Tech**. All Rights Reserved.
+
+*Napkiq is proprietary enterprise software. Unauthorized copying, modification, distribution, or commercial deployment of this repository is strictly prohibited.*
